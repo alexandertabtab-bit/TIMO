@@ -5,6 +5,7 @@ import streamlit as st
 
 DATA_FILE = "life_chart_data.csv"
 LAB_FILE = "lab_tests.csv"
+REELS_FILE = "reels_data.csv"
 
 st.set_page_config(
     page_title="Safe Haven & Tracker",
@@ -85,6 +86,15 @@ st.markdown(
         border-radius: 8px !important;
         border: none !important;
     }
+
+    /* Reel Card Frame */
+    .reel-card {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2D7C5 !important;
+        padding: 16px !important;
+        border-radius: 12px !important;
+        margin-bottom: 12px !important;
+    }
     
     /* Tables & Dataframes */
     [data-testid="stDataFrame"] {
@@ -115,6 +125,21 @@ COLUMNS = [
 ]
 
 LAB_COLUMNS = ["date", "lab_type", "result_value", "notes", "next_due_date"]
+
+DEFAULT_REELS = [
+    {
+        "title": "Calm Quran Recitation & Nature",
+        "url": "https://www.youtube.com/watch?v=2OEL4P1Rz0U",
+        "category": "Grounding & Peace",
+        "added_by": "System",
+    },
+    {
+        "title": "Relaxing Ocean Waves at Sunset",
+        "url": "https://www.youtube.com/watch?v=bn9F19Hi1Lk",
+        "category": "Nature & Ambiance",
+        "added_by": "System",
+    },
+]
 
 # Mood-Adaptive Islamic Quote Bank
 ISLAMIC_QUOTES = {
@@ -166,6 +191,21 @@ def save_entry(entry: dict):
     df = pd.concat([df, pd.DataFrame([entry])], ignore_index=True)
     df = df.sort_values("date")
     df.to_csv(DATA_FILE, index=False)
+
+
+def load_reels() -> pd.DataFrame:
+    if os.path.exists(REELS_FILE):
+        return pd.read_csv(REELS_FILE)
+    df_default = pd.DataFrame(DEFAULT_REELS)
+    df_default.to_csv(REELS_FILE, index=False)
+    return df_default
+
+
+def save_reel(title: str, url: str, category: str, added_by: str):
+    df = load_reels()
+    new_row = pd.DataFrame([{"title": title, "url": url, "category": category, "added_by": added_by}])
+    df = pd.concat([df, new_row], ignore_index=True)
+    df.to_csv(REELS_FILE, index=False)
 
 
 def get_timeframe_data(df: pd.DataFrame, timeframe: str) -> pd.DataFrame:
@@ -309,9 +349,83 @@ if view_mode == "Partner View (Daily Space)":
         )
 
     st.markdown("---")
-    st.subheader("History & Comfort Hub")
-    tab_history, tab_math = st.tabs(["Logged History Tables", "Math & Science Bytes"])
+    st.subheader("Comfort & Activity Space")
+    tab_reels, tab_history, tab_math = st.tabs(["🎥 Comfort Reels & Videos", "📊 Logged History Tables", "💡 Math & Science Bytes"])
 
+    # --- TAB: REELS & VIDEOS
+    with tab_reels:
+        st.caption("A peaceful space to watch grounding videos, soothing clips, or shared reels.")
+        
+        reels_df = load_reels()
+
+        # Category Filter
+        categories = ["All"] + list(reels_df["category"].unique())
+        selected_cat = st.selectbox("Filter by Mood / Category", categories)
+
+        if selected_cat != "All":
+            filtered_reels = reels_df[reels_df["category"] == selected_cat].reset_index(drop=True)
+        else:
+            filtered_reels = reels_df.reset_index(drop=True)
+
+        if not filtered_reels.empty:
+            # Reel Index Session State
+            if "reel_idx" not in st.session_state:
+                st.session_state.reel_idx = 0
+
+            # Safeguard index out of bounds
+            if st.session_state.reel_idx >= len(filtered_reels):
+                st.session_state.reel_idx = 0
+
+            current_reel = filtered_reels.iloc[st.session_state.reel_idx]
+
+            # Reel Card Display
+            st.markdown(
+                f"""
+                <div class="reel-card">
+                    <h3 style="color:#235D3A; margin:0;">{current_reel['title']}</h3>
+                    <p style="color:#706254; font-size:0.9em; margin-top:4px;">Category: <b>{current_reel['category']}</b> | Added by: {current_reel['added_by']}</p>
+                </div>
+            """,
+                unsafe_allow_html=True,
+            )
+
+            # Video Player
+            st.video(current_reel["url"])
+
+            # Carousel Navigation Controls
+            col_prev, col_count, col_next = st.columns([1, 2, 1])
+            with col_prev:
+                if st.button("⬅️ Previous Reel"):
+                    st.session_state.reel_idx = (st.session_state.reel_idx - 1) % len(filtered_reels)
+                    st.rerun()
+            with col_count:
+                st.write(f"<p style='text-align:center; padding-top:8px; color:#706254;'>Reel {st.session_state.reel_idx + 1} of {len(filtered_reels)}</p>", unsafe_allow_html=True)
+            with col_next:
+                if st.button("Next Reel ➡️"):
+                    st.session_state.reel_idx = (st.session_state.reel_idx + 1) % len(filtered_reels)
+                    st.rerun()
+
+        else:
+            st.info("No videos found for this category.")
+
+        # Expander to Add New Video Link
+        st.markdown("<br>", unsafe_allow_html=True)
+        with st.expander("➕ Add a New Video or Reel Link"):
+            with st.form("add_reel_form"):
+                r_title = st.text_input("Video Title", placeholder="e.g., Soft Rain Ambiance or Comforting Message")
+                r_url = st.text_input("Video URL (YouTube, YouTube Shorts, MP4 link)", placeholder="https://www.youtube.com/watch?v=...")
+                r_cat = st.selectbox("Category", ["Grounding & Peace", "Humor & Comfort", "Nature & Ambiance", "Quran & Reflection"])
+                r_author = st.text_input("Your Name / Note", value="Partner")
+
+                if st.form_submit_button("Add to Reels Library"):
+                    if r_title and r_url:
+                        save_reel(r_title, r_url, r_cat, r_author)
+                        st.success("New video added to the reels feed!")
+                        st.rerun()
+                    else:
+                        st.warning("Please provide both a title and a valid video URL.")
+
+    # --- TAB: HISTORY TABLES
     with tab_history:
         timeframe = st.selectbox(
             "Filter History Timeframe",
@@ -328,6 +442,7 @@ if view_mode == "Partner View (Daily Space)":
         else:
             st.info("No records found for this timeframe.")
 
+    # --- TAB: MATH BYTES
     with tab_math:
         for b in MATH_SCIENCE_BYTES:
             st.markdown(f"- {b}")
@@ -464,4 +579,3 @@ else:
             st.dataframe(labs_df.sort_values("date", ascending=False), use_container_width=True)
         else:
             st.warning("No lab records found.")
-    
