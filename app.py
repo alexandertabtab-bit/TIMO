@@ -12,83 +12,83 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Islamic Sunset Theme Styling (Inspired by Sunset Grand Mosque & Makkah Warm Light)
+# Deep Islamic Sunset Theme (Dusk Gold & Amber Warmth)
 st.markdown(
     """
     <style>
-    .stApp {
-        background-color: #12100E;
-        color: #E6E1DA;
+    /* Force overall app background */
+    [data-testid="stAppViewContainer"], .stApp {
+        background-color: #140F0D !important;
+        color: #EBDCCB !important;
     }
     
-    /* Dynamic Quote Card with Sunset Warmth */
-    .quote-card {
-        background: linear-gradient(135deg, #2A1F18 0%, #1A1410 100%);
-        border-left: 5px solid #D4AF37;
-        border-right: 1px solid #3D2D20;
-        border-top: 1px solid #3D2D20;
-        border-bottom: 1px solid #3D2D20;
-        padding: 22px;
-        border-radius: 12px;
-        margin-bottom: 24px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-    }
-    .quote-title {
-        font-size: 1.25em;
-        font-weight: 700;
-        color: #F3C64B;
-        letter-spacing: 0.5px;
-    }
-    .quote-body {
-        font-size: 1.35em;
-        font-style: italic;
-        margin-top: 10px;
-        color: #FFFDF9;
-        line-height: 1.6;
-    }
-    .quote-translation {
-        font-size: 1.05em;
-        color: #E2C99B;
-        margin-top: 8px;
-        margin-bottom: 6px;
-    }
-    .quote-ref {
-        font-size: 0.9em;
-        color: #A89885;
-    }
-    
-    /* Cluster Banner with Warm Dusk Crimson */
-    .cluster-banner {
-        background: linear-gradient(90deg, #4A1A1A 0%, #2D0F0F 100%);
-        color: #FFDADA;
-        border-left: 4px solid #E57373;
-        padding: 14px 18px;
-        border-radius: 8px;
-        margin-top: 15px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    [data-testid="stHeader"] {
+        background-color: rgba(20, 15, 13, 0.8) !important;
     }
 
-    /* Custom Input and Form Accents */
+    [data-testid="stSidebar"] {
+        background-color: #1C1512 !important;
+        border-right: 1px solid #3B2E26 !important;
+    }
+
+    /* Sunset Warm Gold Quotes & Cards */
+    .quote-card {
+        background: linear-gradient(135deg, #2D221A 0%, #1A130E 100%) !important;
+        border-left: 5px solid #E5A93C !important;
+        border-top: 1px solid #4A382A !important;
+        border-right: 1px solid #4A382A !important;
+        border-bottom: 1px solid #4A382A !important;
+        padding: 22px !important;
+        border-radius: 12px !important;
+        margin-bottom: 24px !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    }
+    .quote-title {
+        font-size: 1.25em !important;
+        font-weight: 700 !important;
+        color: #FACC15 !important;
+    }
+    .quote-body {
+        font-size: 1.35em !important;
+        font-style: italic !important;
+        margin-top: 10px !important;
+        color: #FFFDF9 !important;
+        line-height: 1.6 !important;
+    }
+    .quote-translation {
+        font-size: 1.05em !important;
+        color: #E2C99B !important;
+        margin-top: 8px !important;
+    }
+    .quote-ref {
+        font-size: 0.9em !important;
+        color: #A89885 !important;
+    }
+    
+    /* Cluster Banner */
+    .cluster-banner {
+        background: linear-gradient(90deg, #4A1A1A 0%, #2D0F0F 100%) !important;
+        color: #FFDADA !important;
+        border-left: 4px solid #E57373 !important;
+        padding: 14px 18px !important;
+        border-radius: 8px !important;
+        margin-top: 15px !important;
+        font-weight: 600 !important;
+    }
+
+    /* Buttons */
     .stButton>button {
-        background: linear-gradient(135deg, #D4AF37 0%, #AA820A 100%) !important;
+        background: linear-gradient(135deg, #E5A93C 0%, #B88214 100%) !important;
         color: #12100E !important;
         font-weight: bold !important;
         border-radius: 8px !important;
         border: none !important;
     }
     
-    /* Tab Highlight Colors */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 6px;
-        color: #A89885;
-    }
-    .stTabs [aria-selected="true"] {
-        color: #F3C64B !important;
-        border-bottom-color: #D4AF37 !important;
+    /* Tables and Containers */
+    [data-testid="stDataFrame"] {
+        background-color: #1C1512 !important;
+        border-radius: 8px !important;
     }
     </style>
 """,
@@ -124,7 +124,7 @@ ISLAMIC_QUOTES = {
     },
     "Hypomania": {
         "title": "A Gentle Grounding • السكينة والاعتدال",
-        "verse": "« وَاقْصِدْ فِي مَشْيِكَ وَاغْضُضْ مِن صَوْتِكَ »",
+        "verse": "« وَاقْصِدْ فِي مَشْيِكَ وَاغْضُضْ مِن صَوْتِك »",
         "translation": "'And be moderate in your pace and lower your voice...' (Quran 31:19)",
         "ref": "Pause, take a deep breath, and let your body move at a calm, deliberate rhythm.",
     },
@@ -167,7 +167,6 @@ def save_entry(entry: dict):
 
 
 def get_timeframe_data(df: pd.DataFrame, timeframe: str) -> pd.DataFrame:
-    """Filters data by Weekly, Monthly, Yearly, or All Time frames."""
     if df.empty or "date" not in df.columns:
         return df
 
