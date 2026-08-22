@@ -12,82 +12,84 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Deep Islamic Sunset Theme (Dusk Gold & Amber Warmth)
+# Medina Light Sunset & Emerald Theme
 st.markdown(
     """
     <style>
-    /* Force overall app background */
+    /* Main App Background & Primary Text */
     [data-testid="stAppViewContainer"], .stApp {
-        background-color: #140F0D !important;
-        color: #EBDCCB !important;
+        background-color: #FDFBF7 !important;
+        color: #2B241F !important;
     }
     
     [data-testid="stHeader"] {
-        background-color: rgba(20, 15, 13, 0.8) !important;
+        background-color: rgba(253, 251, 247, 0.9) !important;
     }
 
+    /* Sidebar - Warm Sandstone / Ivory Stone */
     [data-testid="stSidebar"] {
-        background-color: #1C1512 !important;
-        border-right: 1px solid #3B2E26 !important;
+        background-color: #F3ECE1 !important;
+        border-right: 1px solid #E2D7C5 !important;
     }
 
-    /* Sunset Warm Gold Quotes & Cards */
+    /* Quote Card - Light Warm Sunset Background with Emerald Left Border */
     .quote-card {
-        background: linear-gradient(135deg, #2D221A 0%, #1A130E 100%) !important;
-        border-left: 5px solid #E5A93C !important;
-        border-top: 1px solid #4A382A !important;
-        border-right: 1px solid #4A382A !important;
-        border-bottom: 1px solid #4A382A !important;
+        background: linear-gradient(135deg, #FFFDFB 0%, #FBF4E8 100%) !important;
+        border-left: 5px solid #235D3A !important;
+        border-top: 1px solid #EADCC9 !important;
+        border-right: 1px solid #EADCC9 !important;
+        border-bottom: 1px solid #EADCC9 !important;
         padding: 22px !important;
         border-radius: 12px !important;
         margin-bottom: 24px !important;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 4px 16px rgba(43, 36, 31, 0.05) !important;
     }
     .quote-title {
         font-size: 1.25em !important;
         font-weight: 700 !important;
-        color: #FACC15 !important;
+        color: #235D3A !important;
     }
     .quote-body {
         font-size: 1.35em !important;
         font-style: italic !important;
         margin-top: 10px !important;
-        color: #FFFDF9 !important;
+        color: #2B241F !important;
         line-height: 1.6 !important;
     }
     .quote-translation {
         font-size: 1.05em !important;
-        color: #E2C99B !important;
+        color: #C07823 !important;
         margin-top: 8px !important;
     }
     .quote-ref {
         font-size: 0.9em !important;
-        color: #A89885 !important;
+        color: #706254 !important;
     }
     
     /* Cluster Banner */
     .cluster-banner {
-        background: linear-gradient(90deg, #4A1A1A 0%, #2D0F0F 100%) !important;
-        color: #FFDADA !important;
-        border-left: 4px solid #E57373 !important;
+        background: linear-gradient(90deg, #FDEDED 0%, #F9E2E2 100%) !important;
+        color: #8C1D1D !important;
+        border-left: 4px solid #E55353 !important;
         padding: 14px 18px !important;
         border-radius: 8px !important;
         margin-top: 15px !important;
         font-weight: 600 !important;
     }
 
-    /* Buttons */
+    /* Buttons - Emerald Green */
     .stButton>button {
-        background: linear-gradient(135deg, #E5A93C 0%, #B88214 100%) !important;
-        color: #12100E !important;
+        background: linear-gradient(135deg, #235D3A 0%, #164228 100%) !important;
+        color: #FFFFFF !important;
         font-weight: bold !important;
         border-radius: 8px !important;
         border: none !important;
     }
     
-    /* Tables and Containers */
+    /* Tables & Dataframes */
     [data-testid="stDataFrame"] {
-        background-color: #1C1512 !important;
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2D7C5 !important;
         border-radius: 8px !important;
     }
     </style>
@@ -333,7 +335,7 @@ if view_mode == "Partner View (Daily Space)":
 # ---------------------------------------------------------------- OBSERVER VIEW
 else:
     pin = st.sidebar.text_input("Observer Passkey", type="password")
-    if pin != "1234" and pin != "":  # Passkey check
+    if pin != "1234" and pin != "":
         st.error("Access restricted.")
         st.stop()
 
@@ -389,7 +391,7 @@ else:
                 save_entry(base_entry)
                 st.success("Observer context appended successfully.")
 
-    # --- TAB 2: Timeframe Data Tables (Weekly, Monthly, Yearly)
+    # --- TAB 2: Timeframe Data Tables
     with tab2:
         st.subheader("Complete Records by Timeframe")
         timeframe_obs = st.selectbox(
@@ -462,3 +464,4 @@ else:
             st.dataframe(labs_df.sort_values("date", ascending=False), use_container_width=True)
         else:
             st.warning("No lab records found.")
+    
