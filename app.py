@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Custom CSS for Instagram/TikTok Mobile Reel Architecture
+# Custom CSS for Mobile Reel Architecture
 st.markdown(
     """
     <style>
@@ -26,19 +26,19 @@ st.markdown(
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     
-    /* Hide top header clutter for immersive viewing */
+    /* Header Styling */
     [data-testid="stHeader"] {
         background-color: rgba(15, 23, 42, 0.8) !important;
         backdrop-filter: blur(8px);
     }
 
-    /* Mobile Sidebar styling */
+    /* Mobile Sidebar Styling */
     [data-testid="stSidebar"] {
         background-color: #1E293B !important;
         border-right: 1px solid #334155 !important;
     }
 
-    /* Mobile Reel Card Container */
+    /* Reel Card Container */
     .mobile-reel-card {
         background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
         border: 1px solid #334155;
@@ -117,7 +117,7 @@ st.markdown(
         transform: scale(0.98);
     }
 
-    /* Streamlit Video Player Mobile Radius */
+    /* Video Player Mobile Radius */
     [data-testid="stVideo"] {
         border-radius: 14px !important;
         overflow: hidden !important;
@@ -144,9 +144,6 @@ COLUMNS = [
     "composite_severity",
 ]
 
-LAB_COLUMNS = ["date", "lab_type", "result_value", "notes", "next_due_date"]
-
-# Initial Educational Islamic Videos (Bilingual Arabic & English)
 DEFAULT_REELS = [
     {
         "title": "سورة الفاتحة وتفسيرها الميسر | Meaning of Surah Al-Fatiha",
@@ -192,7 +189,6 @@ ISLAMIC_QUOTES = {
     },
 }
 
-# ---------------------------------------------------------------- Data Persistence Helpers
 def load_data() -> pd.DataFrame:
     if os.path.exists(DATA_FILE):
         df = pd.read_csv(DATA_FILE)
@@ -204,7 +200,6 @@ def load_data() -> pd.DataFrame:
         df = pd.DataFrame(columns=COLUMNS)
     return df
 
-
 def save_entry(entry: dict):
     df = load_data()
     entry_date_str = pd.Timestamp(entry["date"]).strftime("%Y-%m-%d")
@@ -213,7 +208,6 @@ def save_entry(entry: dict):
     df = pd.concat([df, pd.DataFrame([entry])], ignore_index=True)
     df = df.sort_values("date")
     df.to_csv(DATA_FILE, index=False)
-
 
 def load_reels() -> pd.DataFrame:
     if os.path.exists(REELS_FILE):
@@ -225,13 +219,11 @@ def load_reels() -> pd.DataFrame:
     df_default.to_csv(REELS_FILE, index=False)
     return df_default
 
-
 def save_reel(title: str, url: str, category: str, language: str, added_by: str):
     df = load_reels()
     new_row = pd.DataFrame([{"title": title, "url": url, "category": category, "language": language, "added_by": added_by}])
     df = pd.concat([df, new_row], ignore_index=True)
     df.to_csv(REELS_FILE, index=False)
-
 
 def get_purging_cluster_info(df: pd.DataFrame):
     if df.empty or "purging" not in df.columns:
@@ -262,19 +254,17 @@ def get_purging_cluster_info(df: pd.DataFrame):
     avg_cluster = sum(clusters) / len(clusters) if clusters else 0.0
     return active_streak, round(avg_cluster, 1)
 
-
-# ---------------------------------------------------------------- Navigation Sidebar
+# Navigation
 st.sidebar.title("📱 Menu")
 view_mode = st.sidebar.radio("View Mode", ["🎥 Islamic Reels Feed", "📝 Daily Check-in & Space", "📊 Observer Analytics"])
 
-# ---------------------------------------------------------------- VIEW 1: ISLAMIC REELS FEED
+# VIEW 1: ISLAMIC REELS FEED
 if view_mode == "🎥 Islamic Reels Feed":
     st.markdown("<h2 style='text-align: center; color: #34D399; margin-bottom: 4px;'>📱 Islamic Reels</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #94A3B8; font-size: 0.9em;'>Short Educational Clips in Arabic & English</p>", unsafe_allow_html=True)
 
     reels_df = load_reels()
 
-    # Mobile Filters: Category & Language
     col_cat, col_lang = st.columns([2, 1])
     with col_cat:
         categories = ["All Categories"] + list(reels_df["category"].unique())
@@ -283,7 +273,6 @@ if view_mode == "🎥 Islamic Reels Feed":
         languages = ["All Languages", "Arabic", "English", "Arabic / English"]
         selected_lang = st.selectbox("Language", languages, label_visibility="collapsed")
 
-    # Apply Filters
     filtered_reels = reels_df.copy()
     if selected_cat != "All Categories":
         filtered_reels = filtered_reels[filtered_reels["category"] == selected_cat]
@@ -301,7 +290,6 @@ if view_mode == "🎥 Islamic Reels Feed":
 
         current_reel = filtered_reels.iloc[st.session_state.reel_idx]
 
-        # Reel Header Info Badge
         st.markdown(
             f"""
             <div class="mobile-reel-card">
@@ -316,10 +304,8 @@ if view_mode == "🎥 Islamic Reels Feed":
             unsafe_allow_html=True,
         )
 
-        # Main Video Player Frame
         st.video(current_reel["url"])
 
-        # Swipe-style Control Buttons for Mobile
         c_prev, c_count, c_next = st.columns([1, 1, 1])
         with c_prev:
             if st.button("⏮️ Prev"):
@@ -352,7 +338,7 @@ if view_mode == "🎥 Islamic Reels Feed":
                 else:
                     st.warning("Please enter both a title and a valid URL.")
 
-# ---------------------------------------------------------------- VIEW 2: DAILY CHECK-IN & SPACE
+# VIEW 2: DAILY CHECK-IN & SPACE
 elif view_mode == "📝 Daily Check-in & Space":
     df = load_data()
     active_streak, avg_cluster = get_purging_cluster_info(df)
@@ -416,7 +402,7 @@ elif view_mode == "📝 Daily Check-in & Space":
             st.success("Logged gently.")
             st.rerun()
 
-# ---------------------------------------------------------------- VIEW 3: OBSERVER ANALYTICS
+# VIEW 3: OBSERVER ANALYTICS
 else:
     pin = st.sidebar.text_input("Passkey", type="password")
     if pin != "1234" and pin != "":
