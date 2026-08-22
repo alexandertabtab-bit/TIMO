@@ -7,7 +7,7 @@ DATA_FILE = "life_chart_data.csv"
 LAB_FILE = "lab_tests.csv"
 REELS_FILE = "reels_data.csv"
 
-# Page Configuration - Expanded Sidebar & Sunset Emerald Theme
+# Page Configuration - Light Theme with Expanded Sidebar
 st.set_page_config(
     page_title="Safe Haven & Tracker",
     page_icon="🕌",
@@ -15,45 +15,46 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom Styling: Inspired by Madinah Sunset Gold & Emerald Green Dome
+# Custom Styling: Bright Light Sandstone, Sunset Gold & Emerald Green Accent
 st.markdown(
     """
     <style>
-    /* Global Warm Dusk Background */
+    /* Global Soft Light Sandstone Background */
     [data-testid="stAppViewContainer"], .stApp {
-        background: linear-gradient(180deg, #1C1816 0%, #12100E 100%) !important;
-        color: #FDFBF7 !important;
+        background-color: #FAF8F5 !important;
+        color: #2D241E !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
     /* Header Styling */
     [data-testid="stHeader"] {
-        background-color: rgba(28, 24, 22, 0.85) !important;
+        background-color: rgba(250, 248, 245, 0.85) !important;
         backdrop-filter: blur(8px);
     }
 
-    /* Warm Sandstone Sidebar Styling */
+    /* Soft Warm Sidebar */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #241F1C 0%, #1A1614 100%) !important;
-        border-right: 1px solid #D97706 !important;
+        background-color: #F3ECE4 !important;
+        border-right: 1px solid #E6D8CA !important;
     }
 
-    /* Reel Card - Sandstone Dark & Sunset Gold Border */
+    /* Reel Card - Crisp White with Sunset Gold Accent */
     .mobile-reel-card {
-        background: linear-gradient(145deg, #28221E 0%, #1A221D 100%) !important;
-        border: 1px solid #D97706 !important;
-        border-radius: 18px;
-        padding: 16px;
+        background-color: #FFFFFF !important;
+        border: 1px solid #E6D8CA !important;
+        border-top: 4px solid #D97706 !important;
+        border-radius: 16px;
+        padding: 18px;
         margin-bottom: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
     }
     
-    /* Emerald Dome Category Badge */
+    /* Emerald Category Badge */
     .reel-badge {
         display: inline-block;
-        background-color: #064E3B !important;
-        color: #6EE7B7 !important;
-        border: 1px solid #10B981 !important;
+        background-color: #ECFDF5 !important;
+        color: #047857 !important;
+        border: 1px solid #A7F3D0 !important;
         font-size: 0.75rem;
         font-weight: 700;
         padding: 4px 10px;
@@ -64,9 +65,9 @@ st.markdown(
     /* Sunset Gold Language Badge */
     .reel-lang-badge {
         display: inline-block;
-        background-color: #78350F !important;
-        color: #FDE68A !important;
-        border: 1px solid #F59E0B !important;
+        background-color: #FEF3C7 !important;
+        color: #B45309 !important;
+        border: 1px solid #FDE68A !important;
         font-size: 0.75rem;
         font-weight: 700;
         padding: 4px 10px;
@@ -74,49 +75,49 @@ st.markdown(
         margin-left: 6px;
     }
 
-    /* Islamic Quote Card - Emerald & Gold Accent */
+    /* Islamic Quote Card - Warm Light Gradient */
     .quote-card {
-        background: linear-gradient(135deg, #1A241E 0%, #2A1F18 100%) !important;
-        border-left: 5px solid #F59E0B !important;
-        border-right: 1px solid #047857 !important;
+        background: linear-gradient(135deg, #F0FDF4 0%, #FFFBEB 100%) !important;
+        border-left: 5px solid #D97706 !important;
+        border-right: 1px solid #10B981 !important;
         padding: 18px !important;
         border-radius: 14px !important;
         margin-bottom: 18px !important;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
     .quote-title {
         font-size: 1.1em !important;
         font-weight: 700 !important;
-        color: #F59E0B !important;
+        color: #B45309 !important;
     }
     .quote-body {
         font-size: 1.25em !important;
         font-style: italic !important;
         margin-top: 8px !important;
-        color: #FDFBF7 !important;
+        color: #1F2937 !important;
         line-height: 1.6 !important;
         direction: rtl;
         text-align: right;
     }
     .quote-translation {
         font-size: 0.95em !important;
-        color: #6EE7B7 !important;
+        color: #047857 !important;
         margin-top: 8px !important;
         direction: ltr;
         text-align: left;
     }
 
-    /* Touch-Optimized Emerald & Gold Buttons */
+    /* Touch-Optimized Emerald Green Buttons */
     .stButton>button {
         width: 100% !important;
         height: 48px !important;
         border-radius: 12px !important;
         background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-        border: 1px solid #F59E0B !important;
+        border: none !important;
         color: #FFFFFF !important;
         font-weight: 700 !important;
         font-size: 1rem !important;
-        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25) !important;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25) !important;
     }
     
     .stButton>button:active {
@@ -127,7 +128,7 @@ st.markdown(
     [data-testid="stVideo"] {
         border-radius: 14px !important;
         overflow: hidden !important;
-        border: 1px solid #D97706;
+        border: 1px solid #E6D8CA;
     }
     </style>
 """,
@@ -269,7 +270,7 @@ if view_mode == "📝 Daily Check-in & Space":
     df = load_data()
     active_streak, avg_cluster = get_purging_cluster_info(df)
 
-    st.markdown("<h2 style='color: #F59E0B;'>Daily Sanctuary & Tracking</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #B45309;'>Daily Sanctuary & Tracking</h2>", unsafe_allow_html=True)
 
     mood_state = st.radio("Mind & Spirit State Today", ["Depression", "Stable", "Hypomania"], horizontal=True)
 
@@ -280,7 +281,7 @@ if view_mode == "📝 Daily Check-in & Space":
             <div class="quote-title">{quote['title']}</div>
             <div class="quote-body">{quote['verse']}</div>
             <div class="quote-translation">{quote['translation']}</div>
-            <p style="color:#FDE68A; font-size:0.85em; margin-top:8px;">{quote['ref']}</p>
+            <p style="color:#B45309; font-size:0.85em; margin-top:8px;">{quote['ref']}</p>
         </div>
     """,
         unsafe_allow_html=True,
@@ -330,8 +331,8 @@ if view_mode == "📝 Daily Check-in & Space":
 
 # VIEW 2: ISLAMIC REELS FEED
 elif view_mode == "🎥 Islamic Reels Feed":
-    st.markdown("<h2 style='text-align: center; color: #F59E0B; margin-bottom: 4px;'>📱 Islamic Reels</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #FDE68A; font-size: 0.9em;'>Short Educational Clips & Reminders</p>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #B45309; margin-bottom: 4px;'>📱 Islamic Reels</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #047857; font-size: 0.9em; font-weight: 500;'>Short Educational Clips & Reminders</p>", unsafe_allow_html=True)
 
     reels_df = load_reels()
 
@@ -367,8 +368,8 @@ elif view_mode == "🎥 Islamic Reels Feed":
                     <span class="reel-badge">{current_reel['category']}</span>
                     <span class="reel-lang-badge">🌐 {current_reel['language']}</span>
                 </div>
-                <h3 style="color:#FDFBF7; margin:6px 0 2px 0; font-size: 1.1rem; line-height:1.4;">{current_reel['title']}</h3>
-                <p style="color:#FDE68A; font-size:0.8rem; margin:0;">Shared by: {current_reel['added_by']}</p>
+                <h3 style="color:#1F2937; margin:6px 0 2px 0; font-size: 1.1rem; line-height:1.4;">{current_reel['title']}</h3>
+                <p style="color:#6B7280; font-size:0.8rem; margin:0;">Shared by: {current_reel['added_by']}</p>
             </div>
         """,
             unsafe_allow_html=True,
@@ -382,7 +383,7 @@ elif view_mode == "🎥 Islamic Reels Feed":
                 st.session_state.reel_idx = (st.session_state.reel_idx - 1) % len(filtered_reels)
                 st.rerun()
         with c_count:
-            st.markdown(f"<p style='text-align:center; margin-top:12px; font-weight:bold; color:#F59E0B;'>{st.session_state.reel_idx + 1} / {len(filtered_reels)}</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='text-align:center; margin-top:12px; font-weight:bold; color:#B45309;'>{st.session_state.reel_idx + 1} / {len(filtered_reels)}</p>", unsafe_allow_html=True)
         with c_next:
             if st.button("Next ⏭️"):
                 st.session_state.reel_idx = (st.session_state.reel_idx + 1) % len(filtered_reels)
@@ -415,7 +416,7 @@ else:
         st.error("Access restricted.")
         st.stop()
 
-    st.markdown("<h2 style='color: #F59E0B;'>Observer Dashboard</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #B45309;'>Observer Dashboard</h2>", unsafe_allow_html=True)
     df = load_data()
 
     if not df.empty:
