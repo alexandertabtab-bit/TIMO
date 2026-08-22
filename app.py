@@ -7,100 +7,121 @@ DATA_FILE = "life_chart_data.csv"
 LAB_FILE = "lab_tests.csv"
 REELS_FILE = "reels_data.csv"
 
+# Mobile-First Page Configuration
 st.set_page_config(
     page_title="Safe Haven & Tracker",
-    layout="wide",
-    initial_sidebar_state="expanded",
+    page_icon="🌙",
+    layout="centered",
+    initial_sidebar_state="collapsed",
 )
 
-# Medina Light Sunset & Emerald Theme
+# Custom CSS for Instagram/TikTok Mobile Reel Architecture
 st.markdown(
     """
     <style>
-    /* Main App Background & Primary Text */
+    /* Global Container Setup for Mobile Viewports */
     [data-testid="stAppViewContainer"], .stApp {
-        background-color: #FDFBF7 !important;
-        color: #2B241F !important;
+        background-color: #0F172A !important;
+        color: #F8FAFC !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     
+    /* Hide top header clutter for immersive viewing */
     [data-testid="stHeader"] {
-        background-color: rgba(253, 251, 247, 0.9) !important;
+        background-color: rgba(15, 23, 42, 0.8) !important;
+        backdrop-filter: blur(8px);
     }
 
-    /* Sidebar - Warm Sandstone / Ivory Stone */
+    /* Mobile Sidebar styling */
     [data-testid="stSidebar"] {
-        background-color: #F3ECE1 !important;
-        border-right: 1px solid #E2D7C5 !important;
+        background-color: #1E293B !important;
+        border-right: 1px solid #334155 !important;
     }
 
-    /* Quote Card - Light Warm Sunset Background with Emerald Left Border */
+    /* Mobile Reel Card Container */
+    .mobile-reel-card {
+        background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+        border: 1px solid #334155;
+        border-radius: 18px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+    
+    .reel-badge {
+        display: inline-block;
+        background-color: #065F46;
+        color: #34D399;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        margin-bottom: 8px;
+    }
+
+    .reel-lang-badge {
+        display: inline-block;
+        background-color: #1E3A8A;
+        color: #93C5FD;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        margin-left: 6px;
+    }
+
+    /* Islamic Reminders Quote Card */
     .quote-card {
-        background: linear-gradient(135deg, #FFFDFB 0%, #FBF4E8 100%) !important;
-        border-left: 5px solid #235D3A !important;
-        border-top: 1px solid #EADCC9 !important;
-        border-right: 1px solid #EADCC9 !important;
-        border-bottom: 1px solid #EADCC9 !important;
-        padding: 22px !important;
-        border-radius: 12px !important;
-        margin-bottom: 24px !important;
-        box-shadow: 0 4px 16px rgba(43, 36, 31, 0.05) !important;
+        background: linear-gradient(135deg, #1E293B 0%, #064E3B 100%) !important;
+        border-left: 5px solid #10B981 !important;
+        padding: 18px !important;
+        border-radius: 14px !important;
+        margin-bottom: 18px !important;
     }
     .quote-title {
-        font-size: 1.25em !important;
+        font-size: 1.1em !important;
         font-weight: 700 !important;
-        color: #235D3A !important;
+        color: #34D399 !important;
     }
     .quote-body {
-        font-size: 1.35em !important;
+        font-size: 1.25em !important;
         font-style: italic !important;
-        margin-top: 10px !important;
-        color: #2B241F !important;
+        margin-top: 8px !important;
+        color: #F8FAFC !important;
         line-height: 1.6 !important;
+        direction: rtl;
+        text-align: right;
     }
     .quote-translation {
-        font-size: 1.05em !important;
-        color: #C07823 !important;
+        font-size: 0.95em !important;
+        color: #FCD34D !important;
         margin-top: 8px !important;
-    }
-    .quote-ref {
-        font-size: 0.9em !important;
-        color: #706254 !important;
-    }
-    
-    /* Cluster Banner */
-    .cluster-banner {
-        background: linear-gradient(90deg, #FDEDED 0%, #F9E2E2 100%) !important;
-        color: #8C1D1D !important;
-        border-left: 4px solid #E55353 !important;
-        padding: 14px 18px !important;
-        border-radius: 8px !important;
-        margin-top: 15px !important;
-        font-weight: 600 !important;
+        direction: ltr;
+        text-align: left;
     }
 
-    /* Buttons - Emerald Green */
+    /* Touch-Optimized Large Buttons */
     .stButton>button {
-        background: linear-gradient(135deg, #235D3A 0%, #164228 100%) !important;
-        color: #FFFFFF !important;
-        font-weight: bold !important;
-        border-radius: 8px !important;
-        border: none !important;
-    }
-
-    /* Reel Card Frame */
-    .reel-card {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2D7C5 !important;
-        padding: 16px !important;
+        width: 100% !important;
+        height: 48px !important;
         border-radius: 12px !important;
-        margin-bottom: 12px !important;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3) !important;
     }
     
-    /* Tables & Dataframes */
-    [data-testid="stDataFrame"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2D7C5 !important;
-        border-radius: 8px !important;
+    .stButton>button:active {
+        transform: scale(0.98);
+    }
+
+    /* Streamlit Video Player Mobile Radius */
+    [data-testid="stVideo"] {
+        border-radius: 14px !important;
+        overflow: hidden !important;
+        border: 1px solid #334155;
     }
     </style>
 """,
@@ -115,7 +136,6 @@ COLUMNS = [
     "sleep_hours",
     "purging",
     "partner_notes",
-    # Observer Fields
     "ate_meals",
     "restriction_observed",
     "location_tag",
@@ -126,51 +146,53 @@ COLUMNS = [
 
 LAB_COLUMNS = ["date", "lab_type", "result_value", "notes", "next_due_date"]
 
+# Initial Educational Islamic Videos (Bilingual Arabic & English)
 DEFAULT_REELS = [
     {
-        "title": "Calm Quran Recitation & Nature",
+        "title": "سورة الفاتحة وتفسيرها الميسر | Meaning of Surah Al-Fatiha",
         "url": "https://www.youtube.com/watch?v=2OEL4P1Rz0U",
-        "category": "Grounding & Peace",
+        "category": "Quran & Tafseer (القرآن والتفسير)",
+        "language": "Arabic / English",
         "added_by": "System",
     },
     {
-        "title": "Relaxing Ocean Waves at Sunset",
+        "title": "The Power of Sabr (Patience) & Trusting Allah's Plan",
         "url": "https://www.youtube.com/watch?v=bn9F19Hi1Lk",
-        "category": "Nature & Ambiance",
+        "category": "Reminders & Grounding (رقائق وتذكير)",
+        "language": "English",
+        "added_by": "System",
+    },
+    {
+        "title": "فضل الأذكار اليومية وحفظ المسلم | Daily Adhkar Protection",
+        "url": "https://www.youtube.com/watch?v=2OEL4P1Rz0U",
+        "category": "Hadith & Sunnah (الحديث والسنة)",
+        "language": "Arabic",
         "added_by": "System",
     },
 ]
 
-# Mood-Adaptive Islamic Quote Bank
 ISLAMIC_QUOTES = {
     "Depression": {
         "title": "A Reminder of Ease • تذكير باليسر",
         "verse": "« فَإِنَّ مَعَ الْعُسْرِ يُسْرًا • إِنَّ مَعَ الْعُسْرِ يُسْرًا »",
         "translation": "'For indeed, with hardship will come ease. Indeed, with hardship will come ease.' (Quran 94:5-6)",
-        "ref": "Remember that your worth is non-negotiable, and taking things one moment at a time is more than enough today.",
+        "ref": "Take things one moment at a time. Allah does not burden a soul beyond what it can bear.",
     },
     "Hypomania": {
         "title": "A Gentle Grounding • السكينة والاعتدال",
         "verse": "« وَاقْصِدْ فِي مَشْيِكَ وَاغْضُضْ مِن صَوْتِك »",
-        "translation": "'And be moderate in your pace and lower your voice...' (Quran 31:19)",
-        "ref": "Pause, take a deep breath, and let your body move at a calm, deliberate rhythm.",
+        "translation": "'And be moderate in your pace...' (Quran 31:19)",
+        "ref": "Pause, breathe deeply, and allow your body to move with calm deliberation.",
     },
     "Stable": {
         "title": "A Moment of Peace • طمأنينة القلب",
-        "verse": "« لَئِن شَكَرْتُمْ لأَزِيدَنَّكُمْ »",
-        "translation": "'If you are grateful, I will surely increase you in favor...' (Quran 14:7)",
-        "ref": "May your heart remain grounded, peaceful, and filled with tranquility today.",
+        "verse": "« أَلا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ »",
+        "translation": "'Unquestionably, by the remembrance of Allah do hearts find rest.' (Quran 13:28)",
+        "ref": "May your heart remain grounded, thankful, and calm throughout today.",
     },
 }
 
-MATH_SCIENCE_BYTES = [
-    "**The Beauty of Euler's Identity:** $e^{i\\pi} + 1 = 0$ combines five fundamental constants into one elegant balance.",
-    "**Cosmological Light:** Cosmic microwave background radiation has traveled over 13.8 billion years through space to reach detectors.",
-    "**Fibonacci Efficiency:** Sunflower seed spirals follow Fibonacci ratios to minimize spatial overlap.",
-]
-
-
-# ---------------------------------------------------------------- Data Helpers
+# ---------------------------------------------------------------- Data Persistence Helpers
 def load_data() -> pd.DataFrame:
     if os.path.exists(DATA_FILE):
         df = pd.read_csv(DATA_FILE)
@@ -195,38 +217,20 @@ def save_entry(entry: dict):
 
 def load_reels() -> pd.DataFrame:
     if os.path.exists(REELS_FILE):
-        return pd.read_csv(REELS_FILE)
+        df = pd.read_csv(REELS_FILE)
+        if "language" not in df.columns:
+            df["language"] = "Bilingual"
+        return df
     df_default = pd.DataFrame(DEFAULT_REELS)
     df_default.to_csv(REELS_FILE, index=False)
     return df_default
 
 
-def save_reel(title: str, url: str, category: str, added_by: str):
+def save_reel(title: str, url: str, category: str, language: str, added_by: str):
     df = load_reels()
-    new_row = pd.DataFrame([{"title": title, "url": url, "category": category, "added_by": added_by}])
+    new_row = pd.DataFrame([{"title": title, "url": url, "category": category, "language": language, "added_by": added_by}])
     df = pd.concat([df, new_row], ignore_index=True)
     df.to_csv(REELS_FILE, index=False)
-
-
-def get_timeframe_data(df: pd.DataFrame, timeframe: str) -> pd.DataFrame:
-    if df.empty or "date" not in df.columns:
-        return df
-
-    df_filtered = df.copy()
-    df_filtered["date_dt"] = pd.to_datetime(df_filtered["date"])
-    today = pd.Timestamp.today().normalize()
-
-    if timeframe == "Weekly (Last 7 Days)":
-        start_date = today - timedelta(days=7)
-        df_filtered = df_filtered[df_filtered["date_dt"] >= start_date]
-    elif timeframe == "Monthly (Last 30 Days)":
-        start_date = today - timedelta(days=30)
-        df_filtered = df_filtered[df_filtered["date_dt"] >= start_date]
-    elif timeframe == "Yearly (Last 365 Days)":
-        start_date = today - timedelta(days=365)
-        df_filtered = df_filtered[df_filtered["date_dt"] >= start_date]
-
-    return df_filtered.drop(columns=["date_dt"]).sort_values("date", ascending=False)
 
 
 def get_purging_cluster_info(df: pd.DataFrame):
@@ -259,24 +263,103 @@ def get_purging_cluster_info(df: pd.DataFrame):
     return active_streak, round(avg_cluster, 1)
 
 
-def load_labs() -> pd.DataFrame:
-    if os.path.exists(LAB_FILE):
-        return pd.read_csv(LAB_FILE)
-    return pd.DataFrame(columns=LAB_COLUMNS)
+# ---------------------------------------------------------------- Navigation Sidebar
+st.sidebar.title("📱 Menu")
+view_mode = st.sidebar.radio("View Mode", ["🎥 Islamic Reels Feed", "📝 Daily Check-in & Space", "📊 Observer Analytics"])
 
+# ---------------------------------------------------------------- VIEW 1: ISLAMIC REELS FEED
+if view_mode == "🎥 Islamic Reels Feed":
+    st.markdown("<h2 style='text-align: center; color: #34D399; margin-bottom: 4px;'>📱 Islamic Reels</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94A3B8; font-size: 0.9em;'>Short Educational Clips in Arabic & English</p>", unsafe_allow_html=True)
 
-# ---------------------------------------------------------------- Sidebar Access Mode
-st.sidebar.title("Navigation")
-view_mode = st.sidebar.radio("Select View Mode", ["Partner View (Daily Space)", "Observer View (Analytics & Context)"])
+    reels_df = load_reels()
 
-# ---------------------------------------------------------------- PARTNER VIEW
-if view_mode == "Partner View (Daily Space)":
+    # Mobile Filters: Category & Language
+    col_cat, col_lang = st.columns([2, 1])
+    with col_cat:
+        categories = ["All Categories"] + list(reels_df["category"].unique())
+        selected_cat = st.selectbox("Category", categories, label_visibility="collapsed")
+    with col_lang:
+        languages = ["All Languages", "Arabic", "English", "Arabic / English"]
+        selected_lang = st.selectbox("Language", languages, label_visibility="collapsed")
+
+    # Apply Filters
+    filtered_reels = reels_df.copy()
+    if selected_cat != "All Categories":
+        filtered_reels = filtered_reels[filtered_reels["category"] == selected_cat]
+    if selected_lang != "All Languages":
+        filtered_reels = filtered_reels[filtered_reels["language"] == selected_lang]
+
+    filtered_reels = filtered_reels.reset_index(drop=True)
+
+    if not filtered_reels.empty:
+        if "reel_idx" not in st.session_state:
+            st.session_state.reel_idx = 0
+
+        if st.session_state.reel_idx >= len(filtered_reels):
+            st.session_state.reel_idx = 0
+
+        current_reel = filtered_reels.iloc[st.session_state.reel_idx]
+
+        # Reel Header Info Badge
+        st.markdown(
+            f"""
+            <div class="mobile-reel-card">
+                <div>
+                    <span class="reel-badge">{current_reel['category']}</span>
+                    <span class="reel-lang-badge">🌐 {current_reel['language']}</span>
+                </div>
+                <h3 style="color:#F8FAFC; margin:6px 0 2px 0; font-size: 1.1rem; line-height:1.4;">{current_reel['title']}</h3>
+                <p style="color:#94A3B8; font-size:0.8rem; margin:0;">Shared by: {current_reel['added_by']}</p>
+            </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        # Main Video Player Frame
+        st.video(current_reel["url"])
+
+        # Swipe-style Control Buttons for Mobile
+        c_prev, c_count, c_next = st.columns([1, 1, 1])
+        with c_prev:
+            if st.button("⏮️ Prev"):
+                st.session_state.reel_idx = (st.session_state.reel_idx - 1) % len(filtered_reels)
+                st.rerun()
+        with c_count:
+            st.markdown(f"<p style='text-align:center; margin-top:12px; font-weight:bold; color:#94A3B8;'>{st.session_state.reel_idx + 1} / {len(filtered_reels)}</p>", unsafe_allow_html=True)
+        with c_next:
+            if st.button("Next ⏭️"):
+                st.session_state.reel_idx = (st.session_state.reel_idx + 1) % len(filtered_reels)
+                st.rerun()
+
+    else:
+        st.info("No videos found matching these filters.")
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    with st.expander("➕ Share a New Islamic Reel / Video"):
+        with st.form("add_reel_form"):
+            r_title = st.text_input("Title (العنوان)", placeholder="e.g., Tafseer of Ayatul Kursi")
+            r_url = st.text_input("Video Link", placeholder="YouTube Shorts, TikTok, or MP4 URL")
+            r_cat = st.selectbox("Topic Category", ["Quran & Tafseer (القرآن والتفسير)", "Hadith & Sunnah (الحديث والسنة)", "Reminders & Grounding (رقائق وتذكير)", "Fiqh & Daily Life (الفقه والأحكام)"])
+            r_lang = st.selectbox("Language (اللغة)", ["Arabic", "English", "Arabic / English"])
+            r_author = st.text_input("Your Name / Note", value="Partner")
+
+            if st.form_submit_button("Add Reel to Feed"):
+                if r_title and r_url:
+                    save_reel(r_title, r_url, r_cat, r_lang, r_author)
+                    st.success("Video added to the feed!")
+                    st.rerun()
+                else:
+                    st.warning("Please enter both a title and a valid URL.")
+
+# ---------------------------------------------------------------- VIEW 2: DAILY CHECK-IN & SPACE
+elif view_mode == "📝 Daily Check-in & Space":
     df = load_data()
     active_streak, avg_cluster = get_purging_cluster_info(df)
 
-    st.title("Daily Check-in")
+    st.markdown("<h2 style='color: #34D399;'>Daily Space</h2>", unsafe_allow_html=True)
 
-    mood_state = st.radio("How is your mind feeling today?", ["Depression", "Stable", "Hypomania"], horizontal=True)
+    mood_state = st.radio("Mind & Spirit State Today", ["Depression", "Stable", "Hypomania"], horizontal=True)
 
     quote = ISLAMIC_QUOTES[mood_state]
     st.markdown(
@@ -285,7 +368,7 @@ if view_mode == "Partner View (Daily Space)":
             <div class="quote-title">{quote['title']}</div>
             <div class="quote-body">{quote['verse']}</div>
             <div class="quote-translation">{quote['translation']}</div>
-            <div class="quote-ref">{quote['ref']}</div>
+            <p style="color:#94A3B8; font-size:0.85em; margin-top:8px;">{quote['ref']}</p>
         </div>
     """,
         unsafe_allow_html=True,
@@ -293,19 +376,15 @@ if view_mode == "Partner View (Daily Space)":
 
     with st.form("partner_form"):
         entry_date = st.date_input("Date", value=date.today())
+        mood_severity = st.slider("Severity level (1 mild → 10 heavy)", 1, 10, 3)
 
-        st.markdown("**Severity Level**")
-        mood_severity = st.slider("Severity rating (1 minimal impact → 10 overwhelming)", 1, 10, 3)
+        c1, c2 = st.columns(2)
+        sleep_quality = c1.select_slider("Sleep Quality", options=["Bad", "Medium", "Good"], value="Medium")
+        sleep_hours = c2.number_input("Hours Slept", min_value=0.0, max_value=24.0, value=7.0, step=0.5)
 
-        st.markdown("**Sleep & Rest**")
-        col1, col2 = st.columns(2)
-        sleep_quality = col1.select_slider("Sleep Quality", options=["Bad", "Medium", "Good"], value="Medium")
-        sleep_hours = col2.number_input("Hours Slept", min_value=0.0, max_value=24.0, value=7.0, step=0.5)
-
-        st.markdown("**Physical Check-in**")
         purging_today = st.checkbox("Purging occurred today")
 
-        if st.form_submit_button("Save Entry", type="primary"):
+        if st.form_submit_button("Save Today's Entry"):
             date_str = pd.Timestamp(entry_date).strftime("%Y-%m-%d")
             existing = df[df["date"] == date_str]
 
@@ -334,248 +413,20 @@ if view_mode == "Partner View (Daily Space)":
                 "composite_severity": comp_sev,
             }
             save_entry(entry)
-            st.success("Saved gently.")
+            st.success("Logged gently.")
             st.rerun()
 
-    if purging_today or active_streak > 0:
-        st.markdown(
-            f"""
-            <div class="cluster-banner">
-                Active Purging Cluster: Day {active_streak}
-                <br><span style="font-weight:normal; font-size:0.9em;">(Historical baseline average: ~{avg_cluster} days. Remember to hydrate and rest.)</span>
-            </div>
-        """,
-            unsafe_allow_html=True,
-        )
-
-    st.markdown("---")
-    st.subheader("Comfort & Activity Space")
-    tab_reels, tab_history, tab_math = st.tabs(["🎥 Comfort Reels & Videos", "📊 Logged History Tables", "💡 Math & Science Bytes"])
-
-    # --- TAB: REELS & VIDEOS
-    with tab_reels:
-        st.caption("A peaceful space to watch grounding videos, soothing clips, or shared reels.")
-        
-        reels_df = load_reels()
-
-        # Category Filter
-        categories = ["All"] + list(reels_df["category"].unique())
-        selected_cat = st.selectbox("Filter by Mood / Category", categories)
-
-        if selected_cat != "All":
-            filtered_reels = reels_df[reels_df["category"] == selected_cat].reset_index(drop=True)
-        else:
-            filtered_reels = reels_df.reset_index(drop=True)
-
-        if not filtered_reels.empty:
-            # Reel Index Session State
-            if "reel_idx" not in st.session_state:
-                st.session_state.reel_idx = 0
-
-            # Safeguard index out of bounds
-            if st.session_state.reel_idx >= len(filtered_reels):
-                st.session_state.reel_idx = 0
-
-            current_reel = filtered_reels.iloc[st.session_state.reel_idx]
-
-            # Reel Card Display
-            st.markdown(
-                f"""
-                <div class="reel-card">
-                    <h3 style="color:#235D3A; margin:0;">{current_reel['title']}</h3>
-                    <p style="color:#706254; font-size:0.9em; margin-top:4px;">Category: <b>{current_reel['category']}</b> | Added by: {current_reel['added_by']}</p>
-                </div>
-            """,
-                unsafe_allow_html=True,
-            )
-
-            # Video Player
-            st.video(current_reel["url"])
-
-            # Carousel Navigation Controls
-            col_prev, col_count, col_next = st.columns([1, 2, 1])
-            with col_prev:
-                if st.button("⬅️ Previous Reel"):
-                    st.session_state.reel_idx = (st.session_state.reel_idx - 1) % len(filtered_reels)
-                    st.rerun()
-            with col_count:
-                st.write(f"<p style='text-align:center; padding-top:8px; color:#706254;'>Reel {st.session_state.reel_idx + 1} of {len(filtered_reels)}</p>", unsafe_allow_html=True)
-            with col_next:
-                if st.button("Next Reel ➡️"):
-                    st.session_state.reel_idx = (st.session_state.reel_idx + 1) % len(filtered_reels)
-                    st.rerun()
-
-        else:
-            st.info("No videos found for this category.")
-
-        # Expander to Add New Video Link
-        st.markdown("<br>", unsafe_allow_html=True)
-        with st.expander("➕ Add a New Video or Reel Link"):
-            with st.form("add_reel_form"):
-                r_title = st.text_input("Video Title", placeholder="e.g., Soft Rain Ambiance or Comforting Message")
-                r_url = st.text_input("Video URL (YouTube, YouTube Shorts, MP4 link)", placeholder="https://www.youtube.com/watch?v=...")
-                r_cat = st.selectbox("Category", ["Grounding & Peace", "Humor & Comfort", "Nature & Ambiance", "Quran & Reflection"])
-                r_author = st.text_input("Your Name / Note", value="Partner")
-
-                if st.form_submit_button("Add to Reels Library"):
-                    if r_title and r_url:
-                        save_reel(r_title, r_url, r_cat, r_author)
-                        st.success("New video added to the reels feed!")
-                        st.rerun()
-                    else:
-                        st.warning("Please provide both a title and a valid video URL.")
-
-    # --- TAB: HISTORY TABLES
-    with tab_history:
-        timeframe = st.selectbox(
-            "Filter History Timeframe",
-            ["Weekly (Last 7 Days)", "Monthly (Last 30 Days)", "Yearly (Last 365 Days)", "All Time"],
-            key="partner_timeframe",
-        )
-        filtered_df = get_timeframe_data(df, timeframe)
-
-        if not filtered_df.empty:
-            st.dataframe(
-                filtered_df[["date", "mood_type", "mood_severity", "sleep_quality", "sleep_hours", "purging"]],
-                use_container_width=True,
-            )
-        else:
-            st.info("No records found for this timeframe.")
-
-    # --- TAB: MATH BYTES
-    with tab_math:
-        for b in MATH_SCIENCE_BYTES:
-            st.markdown(f"- {b}")
-
-# ---------------------------------------------------------------- OBSERVER VIEW
+# ---------------------------------------------------------------- VIEW 3: OBSERVER ANALYTICS
 else:
-    pin = st.sidebar.text_input("Observer Passkey", type="password")
+    pin = st.sidebar.text_input("Passkey", type="password")
     if pin != "1234" and pin != "":
         st.error("Access restricted.")
         st.stop()
 
-    st.title("Observer Control & Predictive Dashboard")
-    tab1, tab2, tab3, tab4 = st.tabs(
-        ["Meal & Context Logger", "Timeframe Data Table", "Predictive Risk & Triggers", "Lithium Lab Countdown"]
-    )
-
+    st.markdown("<h2 style='color: #34D399;'>Observer Dashboard</h2>", unsafe_allow_html=True)
     df = load_data()
 
-    # --- TAB 1: Meal & Context Entry
-    with tab1:
-        st.subheader("Log Meal Intake & Observer Context")
-
-        target_date = st.date_input("Entry Date to Append Context", value=date.today())
-        target_str = target_date.strftime("%Y-%m-%d")
-        existing_row = df[df["date"] == target_str]
-
-        curr_ate = existing_row["ate_meals"].values[0] if not existing_row.empty and pd.notna(existing_row["ate_meals"].values[0]) else "All meals"
-        curr_restr = bool(existing_row["restriction_observed"].values[0]) if not existing_row.empty and pd.notna(existing_row["restriction_observed"].values[0]) else False
-        curr_loc = existing_row["location_tag"].values[0] if not existing_row.empty and pd.notna(existing_row["location_tag"].values[0]) else "Home"
-        curr_trig = existing_row["trigger_tags"].values[0].split(",") if not existing_row.empty and pd.notna(existing_row["trigger_tags"].values[0]) and existing_row["trigger_tags"].values[0] else []
-        curr_obs = existing_row["observer_notes"].values[0] if not existing_row.empty and pd.notna(existing_row["observer_notes"].values[0]) else ""
-
-        with st.form("observer_context_form"):
-            st.markdown("**Meal Status (Logged via Conversations)**")
-            ate_meals = st.selectbox("Meals Logged", ["All meals", "Skipped 1 meal", "Skipped most/all meals"], index=["All meals", "Skipped 1 meal", "Skipped most/all meals"].index(curr_ate))
-            restriction_observed = st.checkbox("Restriction behavior observed", value=curr_restr)
-
-            st.markdown("**Environmental Context**")
-            location_tag = st.selectbox("Current Location", ["Home", "Spain / Travel", "Work Trip", "Family Visit"], index=0)
-            trigger_tags = st.multiselect("Active Triggers", ["Family Conflict", "Sleep Disruption", "Travel Stress", "Work Load", "Social Overstimulation"], default=[t for t in curr_trig if t in ["Family Conflict", "Sleep Disruption", "Travel Stress", "Work Load", "Social Overstimulation"]])
-            observer_notes = st.text_area("Private Notes (Conversations, bad work days, hidden stressors)", value=curr_obs)
-
-            if st.form_submit_button("Update Observer Records"):
-                if existing_row.empty:
-                    base_entry = {c: None for c in COLUMNS}
-                    base_entry["date"] = target_str
-                    base_entry["mood_type"] = "Stable"
-                    base_entry["mood_severity"] = 1
-                    base_entry["sleep_quality"] = "Medium"
-                    base_entry["sleep_hours"] = 7.0
-                    base_entry["purging"] = False
-                else:
-                    base_entry = existing_row.to_dict(orient="records")[0]
-
-                base_entry["ate_meals"] = ate_meals
-                base_entry["restriction_observed"] = restriction_observed
-                base_entry["location_tag"] = location_tag
-                base_entry["trigger_tags"] = ",".join(trigger_tags)
-                base_entry["observer_notes"] = observer_notes
-
-                save_entry(base_entry)
-                st.success("Observer context appended successfully.")
-
-    # --- TAB 2: Timeframe Data Tables
-    with tab2:
-        st.subheader("Complete Records by Timeframe")
-        timeframe_obs = st.selectbox(
-            "Select Time Window",
-            ["Weekly (Last 7 Days)", "Monthly (Last 30 Days)", "Yearly (Last 365 Days)", "All Time"],
-            key="obs_timeframe",
-        )
-        obs_filtered = get_timeframe_data(df, timeframe_obs)
-
-        if not obs_filtered.empty:
-            st.dataframe(obs_filtered, use_container_width=True)
-        else:
-            st.info("No logs available for this timeframe.")
-
-    # --- TAB 3: Predictive Risk & Trigger Correlations
-    with tab3:
-        if df.empty:
-            st.info("No logs available yet.")
-        else:
-            df_sorted = df.copy()
-            df_sorted["date"] = pd.to_datetime(df_sorted["date"])
-            df_sorted = df_sorted.sort_values("date")
-
-            st.subheader("Trigger-to-Restriction Lag & Probability Engine")
-
-            df_sorted["has_trigger"] = df_sorted["trigger_tags"].apply(lambda x: True if pd.notna(x) and len(str(x)) > 0 else False)
-            df_sorted["restr_next_48h"] = df_sorted["restriction_observed"].shift(-1).fillna(False) | df_sorted["restriction_observed"].shift(-2).fillna(False)
-
-            trigger_days = df_sorted[df_sorted["has_trigger"]]
-            if not trigger_days.empty:
-                prob = (trigger_days["restr_next_48h"].sum() / len(trigger_days)) * 100
-                st.metric("Probability of ED Restriction within 48h of a Trigger", f"{prob:.1f}%")
-            else:
-                st.info("Logging more trigger tags will activate the 48h restriction probability engine.")
-
-            st.markdown("---")
-            st.subheader("Factor Severity Correlations (Statistical Floor n ≥ 10)")
-
-            trig_rows = []
-            for _, row in df_sorted.iterrows():
-                if pd.notna(row["trigger_tags"]) and row["trigger_tags"]:
-                    for t in str(row["trigger_tags"]).split(","):
-                        trig_rows.append({"Trigger": t, "Severity": row["composite_severity"]})
-
-            if trig_rows:
-                tdf = pd.DataFrame(trig_rows)
-                summary = tdf.groupby("Trigger").agg(Logged_Days=("Severity", "count"), Raw_Avg_Severity=("Severity", "mean")).reset_index()
-
-                summary["Confidence"] = summary["Logged_Days"].apply(lambda n: "Established Pattern" if n >= 10 else f"Low Sample Size (n={n})")
-                summary["Average Severity"] = summary.apply(lambda r: round(r["Raw_Avg_Severity"], 2) if r["Logged_Days"] >= 10 else "N/A (n < 10)", axis=1)
-
-                st.dataframe(summary[["Trigger", "Logged_Days", "Average Severity", "Confidence"]].sort_values("Logged_Days", ascending=False), use_container_width=True)
-
-    # --- TAB 4: Lithium Lab Countdown
-    with tab4:
-        st.subheader("Serum Lithium & Clinical Schedule")
-        labs_df = load_labs()
-
-        if not labs_df.empty:
-            labs_df["date"] = pd.to_datetime(labs_df["date"])
-            labs_df["next_due_date"] = pd.to_datetime(labs_df["next_due_date"])
-            latest = labs_df.sort_values("date").iloc[-1]
-            days_left = (latest["next_due_date"] - pd.Timestamp.today()).days
-
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Latest Level", f"{latest['result_value']} mmol/L")
-            c2.metric("Last Lab Date", latest["date"].strftime("%Y-%m-%d"))
-            c3.metric("Next Test Due (6-Month Window)", latest["next_due_date"].strftime("%Y-%m-%d"), delta=f"{days_left} days left", delta_color="normal" if days_left > 30 else "inverse")
-
-            st.dataframe(labs_df.sort_values("date", ascending=False), use_container_width=True)
-        else:
-            st.warning("No lab records found.")
+    if not df.empty:
+        st.dataframe(df, use_container_width=True)
+    else:
+        st.info("No data recorded yet.")
