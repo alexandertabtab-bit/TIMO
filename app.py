@@ -6,37 +6,89 @@ import streamlit as st
 DATA_FILE = "life_chart_data.csv"
 LAB_FILE = "lab_tests.csv"
 
-st.set_page_config(page_title="Safe Haven & Tracker", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(
+    page_title="Safe Haven & Tracker",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
-# Custom Warm Theme Styling for Partner View
+# Islamic Sunset Theme Styling (Inspired by Sunset Grand Mosque & Makkah Warm Light)
 st.markdown(
     """
     <style>
+    .stApp {
+        background-color: #12100E;
+        color: #E6E1DA;
+    }
+    
+    /* Dynamic Quote Card with Sunset Warmth */
     .quote-card {
-        background-color: #2D3748;
-        border-left: 5px solid #D69E2E;
-        padding: 18px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        color: #EDF2F7;
+        background: linear-gradient(135deg, #2A1F18 0%, #1A1410 100%);
+        border-left: 5px solid #D4AF37;
+        border-right: 1px solid #3D2D20;
+        border-top: 1px solid #3D2D20;
+        border-bottom: 1px solid #3D2D20;
+        padding: 22px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
     }
     .quote-title {
-        font-size: 1.1em;
-        font-weight: bold;
-        color: #ECC94B;
+        font-size: 1.25em;
+        font-weight: 700;
+        color: #F3C64B;
+        letter-spacing: 0.5px;
     }
     .quote-body {
-        font-size: 1.05em;
+        font-size: 1.35em;
         font-style: italic;
-        margin-top: 6px;
-    }
-    .cluster-banner {
-        background-color: #742A2A;
-        color: #FFF5F5;
-        padding: 12px;
-        border-radius: 6px;
         margin-top: 10px;
-        font-weight: bold;
+        color: #FFFDF9;
+        line-height: 1.6;
+    }
+    .quote-translation {
+        font-size: 1.05em;
+        color: #E2C99B;
+        margin-top: 8px;
+        margin-bottom: 6px;
+    }
+    .quote-ref {
+        font-size: 0.9em;
+        color: #A89885;
+    }
+    
+    /* Cluster Banner with Warm Dusk Crimson */
+    .cluster-banner {
+        background: linear-gradient(90deg, #4A1A1A 0%, #2D0F0F 100%);
+        color: #FFDADA;
+        border-left: 4px solid #E57373;
+        padding: 14px 18px;
+        border-radius: 8px;
+        margin-top: 15px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Custom Input and Form Accents */
+    .stButton>button {
+        background: linear-gradient(135deg, #D4AF37 0%, #AA820A 100%) !important;
+        color: #12100E !important;
+        font-weight: bold !important;
+        border-radius: 8px !important;
+        border: none !important;
+    }
+    
+    /* Tab Highlight Colors */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 6px;
+        color: #A89885;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #F3C64B !important;
+        border-bottom-color: #D4AF37 !important;
     }
     </style>
 """,
@@ -65,19 +117,19 @@ LAB_COLUMNS = ["date", "lab_type", "result_value", "notes", "next_due_date"]
 # Mood-Adaptive Islamic Quote Bank
 ISLAMIC_QUOTES = {
     "Depression": {
-        "title": "A Reminder of Ease",
+        "title": "A Reminder of Ease • تذكير باليسر",
         "verse": "« فَإِنَّ مَعَ الْعُسْرِ يُسْرًا • إِنَّ مَعَ الْعُسْرِ يُسْرًا »",
         "translation": "'For indeed, with hardship will come ease. Indeed, with hardship will come ease.' (Quran 94:5-6)",
         "ref": "Remember that your worth is non-negotiable, and taking things one moment at a time is more than enough today.",
     },
     "Hypomania": {
-        "title": "A Gentle Grounding",
-        "verse": "« وَاقْصِدْ فِي مَشْيِكَ وَاغْضُضْ مِن صَوْتِك »",
+        "title": "A Gentle Grounding • السكينة والاعتدال",
+        "verse": "« وَاقْصِدْ فِي مَشْيِكَ وَاغْضُضْ مِن صَوْتِكَ »",
         "translation": "'And be moderate in your pace and lower your voice...' (Quran 31:19)",
         "ref": "Pause, take a deep breath, and let your body move at a calm, deliberate rhythm.",
     },
     "Stable": {
-        "title": "A Moment of Peace",
+        "title": "A Moment of Peace • طمأنينة القلب",
         "verse": "« لَئِن شَكَرْتُمْ لأَزِيدَنَّكُمْ »",
         "translation": "'If you are grateful, I will surely increase you in favor...' (Quran 14:7)",
         "ref": "May your heart remain grounded, peaceful, and filled with tranquility today.",
@@ -85,9 +137,9 @@ ISLAMIC_QUOTES = {
 }
 
 MATH_SCIENCE_BYTES = [
-    "**The Beauty of Euler's Identity:** $e^{i\\pi} + 1 = 0$ combines five of the most fundamental constants in mathematics into one elegant relationship.",
-    "**Cosmological Curiosity:** Light from the cosmic microwave background has been traveling for over 13.8 billion years to reach detectors today.",
-    "**Fibonacci in Nature:** The spiraling pattern of sunflower seeds follows Fibonacci sequence ratios to maximize spatial efficiency.",
+    "**The Beauty of Euler's Identity:** $e^{i\\pi} + 1 = 0$ combines five fundamental constants into one elegant balance.",
+    "**Cosmological Light:** Cosmic microwave background radiation has traveled over 13.8 billion years through space to reach detectors.",
+    "**Fibonacci Efficiency:** Sunflower seed spirals follow Fibonacci ratios to minimize spatial overlap.",
 ]
 
 
@@ -112,6 +164,28 @@ def save_entry(entry: dict):
     df = pd.concat([df, pd.DataFrame([entry])], ignore_index=True)
     df = df.sort_values("date")
     df.to_csv(DATA_FILE, index=False)
+
+
+def get_timeframe_data(df: pd.DataFrame, timeframe: str) -> pd.DataFrame:
+    """Filters data by Weekly, Monthly, Yearly, or All Time frames."""
+    if df.empty or "date" not in df.columns:
+        return df
+
+    df_filtered = df.copy()
+    df_filtered["date_dt"] = pd.to_datetime(df_filtered["date"])
+    today = pd.Timestamp.today().normalize()
+
+    if timeframe == "Weekly (Last 7 Days)":
+        start_date = today - timedelta(days=7)
+        df_filtered = df_filtered[df_filtered["date_dt"] >= start_date]
+    elif timeframe == "Monthly (Last 30 Days)":
+        start_date = today - timedelta(days=30)
+        df_filtered = df_filtered[df_filtered["date_dt"] >= start_date]
+    elif timeframe == "Yearly (Last 365 Days)":
+        start_date = today - timedelta(days=365)
+        df_filtered = df_filtered[df_filtered["date_dt"] >= start_date]
+
+    return df_filtered.drop(columns=["date_dt"]).sort_values("date", ascending=False)
 
 
 def get_purging_cluster_info(df: pd.DataFrame):
@@ -152,7 +226,7 @@ def load_labs() -> pd.DataFrame:
 
 # ---------------------------------------------------------------- Sidebar Access Mode
 st.sidebar.title("Navigation")
-view_mode = st.sidebar.radio("View", ["Partner View (Daily Space)", "Observer View (Analytics & Context)"])
+view_mode = st.sidebar.radio("Select View Mode", ["Partner View (Daily Space)", "Observer View (Analytics & Context)"])
 
 # ---------------------------------------------------------------- PARTNER VIEW
 if view_mode == "Partner View (Daily Space)":
@@ -169,8 +243,8 @@ if view_mode == "Partner View (Daily Space)":
         <div class="quote-card">
             <div class="quote-title">{quote['title']}</div>
             <div class="quote-body">{quote['verse']}</div>
-            <p style="margin-top:8px; margin-bottom:4px;">{quote['translation']}</p>
-            <small style="color:#A0AEC0;">{quote['ref']}</small>
+            <div class="quote-translation">{quote['translation']}</div>
+            <div class="quote-ref">{quote['ref']}</div>
         </div>
     """,
         unsafe_allow_html=True,
@@ -190,12 +264,11 @@ if view_mode == "Partner View (Daily Space)":
         st.markdown("**Physical Check-in**")
         purging_today = st.checkbox("Purging occurred today")
 
-        partner_notes = st.text_area("Anything on your mind? (Optional)", placeholder="Write anything you'd like to drop off here...")
-
         if st.form_submit_button("Save Entry", type="primary"):
             date_str = pd.Timestamp(entry_date).strftime("%Y-%m-%d")
             existing = df[df["date"] == date_str]
 
+            partner_n = existing["partner_notes"].values[0] if not existing.empty and pd.notna(existing["partner_notes"].values[0]) else ""
             ate = existing["ate_meals"].values[0] if not existing.empty else "All meals"
             restr = existing["restriction_observed"].values[0] if not existing.empty else False
             loc = existing["location_tag"].values[0] if not existing.empty else "Home"
@@ -211,7 +284,7 @@ if view_mode == "Partner View (Daily Space)":
                 "sleep_quality": sleep_quality,
                 "sleep_hours": sleep_hours,
                 "purging": purging_today,
-                "partner_notes": partner_notes,
+                "partner_notes": partner_n,
                 "ate_meals": ate,
                 "restriction_observed": restr,
                 "location_tag": loc,
@@ -235,30 +308,46 @@ if view_mode == "Partner View (Daily Space)":
         )
 
     st.markdown("---")
-    st.subheader("Comfort & Learning Corner")
-    tab_math, tab_history = st.tabs(["Math & Science Bytes", "Your Logged History"])
+    st.subheader("History & Comfort Hub")
+    tab_history, tab_math = st.tabs(["Logged History Tables", "Math & Science Bytes"])
+
+    with tab_history:
+        timeframe = st.selectbox(
+            "Filter History Timeframe",
+            ["Weekly (Last 7 Days)", "Monthly (Last 30 Days)", "Yearly (Last 365 Days)", "All Time"],
+            key="partner_timeframe",
+        )
+        filtered_df = get_timeframe_data(df, timeframe)
+
+        if not filtered_df.empty:
+            st.dataframe(
+                filtered_df[["date", "mood_type", "mood_severity", "sleep_quality", "sleep_hours", "purging"]],
+                use_container_width=True,
+            )
+        else:
+            st.info("No records found for this timeframe.")
 
     with tab_math:
         for b in MATH_SCIENCE_BYTES:
             st.markdown(f"- {b}")
 
-    with tab_history:
-        if not df.empty:
-            st.dataframe(df[["date", "mood_type", "mood_severity", "sleep_quality", "sleep_hours", "partner_notes"]].sort_values("date", ascending=False), use_container_width=True)
-
 # ---------------------------------------------------------------- OBSERVER VIEW
 else:
     pin = st.sidebar.text_input("Observer Passkey", type="password")
-    if pin != "1234" and pin != "":  # Replace 1234 with your preferred pin
+    if pin != "1234" and pin != "":  # Passkey check
         st.error("Access restricted.")
         st.stop()
 
     st.title("Observer Control & Predictive Dashboard")
-    tab1, tab2, tab3 = st.tabs(["Meal & Context Logger", "Predictive Risk & Triggers", "Lithium Lab Countdown"])
+    tab1, tab2, tab3, tab4 = st.tabs(
+        ["Meal & Context Logger", "Timeframe Data Table", "Predictive Risk & Triggers", "Lithium Lab Countdown"]
+    )
 
+    df = load_data()
+
+    # --- TAB 1: Meal & Context Entry
     with tab1:
         st.subheader("Log Meal Intake & Observer Context")
-        df = load_data()
 
         target_date = st.date_input("Entry Date to Append Context", value=date.today())
         target_str = target_date.strftime("%Y-%m-%d")
@@ -301,20 +390,36 @@ else:
                 save_entry(base_entry)
                 st.success("Observer context appended successfully.")
 
+    # --- TAB 2: Timeframe Data Tables (Weekly, Monthly, Yearly)
     with tab2:
-        df = load_data()
+        st.subheader("Complete Records by Timeframe")
+        timeframe_obs = st.selectbox(
+            "Select Time Window",
+            ["Weekly (Last 7 Days)", "Monthly (Last 30 Days)", "Yearly (Last 365 Days)", "All Time"],
+            key="obs_timeframe",
+        )
+        obs_filtered = get_timeframe_data(df, timeframe_obs)
+
+        if not obs_filtered.empty:
+            st.dataframe(obs_filtered, use_container_width=True)
+        else:
+            st.info("No logs available for this timeframe.")
+
+    # --- TAB 3: Predictive Risk & Trigger Correlations
+    with tab3:
         if df.empty:
             st.info("No logs available yet.")
         else:
-            df["date"] = pd.to_datetime(df["date"])
-            df = df.sort_values("date")
+            df_sorted = df.copy()
+            df_sorted["date"] = pd.to_datetime(df_sorted["date"])
+            df_sorted = df_sorted.sort_values("date")
 
             st.subheader("Trigger-to-Restriction Lag & Probability Engine")
 
-            df["has_trigger"] = df["trigger_tags"].apply(lambda x: True if pd.notna(x) and len(str(x)) > 0 else False)
-            df["restr_next_48h"] = df["restriction_observed"].shift(-1).fillna(False) | df["restriction_observed"].shift(-2).fillna(False)
+            df_sorted["has_trigger"] = df_sorted["trigger_tags"].apply(lambda x: True if pd.notna(x) and len(str(x)) > 0 else False)
+            df_sorted["restr_next_48h"] = df_sorted["restriction_observed"].shift(-1).fillna(False) | df_sorted["restriction_observed"].shift(-2).fillna(False)
 
-            trigger_days = df[df["has_trigger"]]
+            trigger_days = df_sorted[df_sorted["has_trigger"]]
             if not trigger_days.empty:
                 prob = (trigger_days["restr_next_48h"].sum() / len(trigger_days)) * 100
                 st.metric("Probability of ED Restriction within 48h of a Trigger", f"{prob:.1f}%")
@@ -325,7 +430,7 @@ else:
             st.subheader("Factor Severity Correlations (Statistical Floor n ≥ 10)")
 
             trig_rows = []
-            for _, row in df.iterrows():
+            for _, row in df_sorted.iterrows():
                 if pd.notna(row["trigger_tags"]) and row["trigger_tags"]:
                     for t in str(row["trigger_tags"]).split(","):
                         trig_rows.append({"Trigger": t, "Severity": row["composite_severity"]})
@@ -339,7 +444,8 @@ else:
 
                 st.dataframe(summary[["Trigger", "Logged_Days", "Average Severity", "Confidence"]].sort_values("Logged_Days", ascending=False), use_container_width=True)
 
-    with tab3:
+    # --- TAB 4: Lithium Lab Countdown
+    with tab4:
         st.subheader("Serum Lithium & Clinical Schedule")
         labs_df = load_labs()
 
