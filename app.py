@@ -1,10 +1,5 @@
-import os
-from datetime import date, datetime, timedelta
-import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import streamlit as st
-
 DATA_FILE = "life_chart_data.csv"
 LAB_FILE = "lab_tests.csv"
 
