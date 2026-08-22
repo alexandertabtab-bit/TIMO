@@ -2,7 +2,7 @@ import os
 from datetime import date, datetime, timedelta
 import pandas as pd
 import streamlit as st
-st.set_page_config(page_title="Safe Haven & Tracker", layout="wide", initial_sidebar_state="expanded")
+
 
 # Custom Warm Theme Styling for Partner View
 st.markdown(
