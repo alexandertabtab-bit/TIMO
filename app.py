@@ -4,7 +4,6 @@ import pandas as pd
 import streamlit as st
 
 DATA_FILE = "life_chart_data.csv"
-LAB_FILE = "lab_tests.csv"
 REELS_FILE = "reels_data.csv"
 
 # Page Configuration - Light Theme with Expanded Sidebar
@@ -142,11 +141,7 @@ COLUMNS = [
     "sleep_quality",
     "sleep_hours",
     "purging",
-    "partner_notes",
-    "ate_meals",
-    "restriction_observed",
-    "location_tag",
-    "trigger_tags",
+    "user_notes",
     "observer_notes",
     "composite_severity",
 ]
@@ -199,7 +194,8 @@ ISLAMIC_QUOTES = {
 def load_data() -> pd.DataFrame:
     if os.path.exists(DATA_FILE):
         df = pd.read_csv(DATA_FILE)
-        df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
+        if "date" in df.columns and not df.empty:
+            df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
         for col in COLUMNS:
             if col not in df.columns:
                 df[col] = None
@@ -232,35 +228,6 @@ def save_reel(title: str, url: str, category: str, language: str, added_by: str)
     df = pd.concat([df, new_row], ignore_index=True)
     df.to_csv(REELS_FILE, index=False)
 
-def get_purging_cluster_info(df: pd.DataFrame):
-    if df.empty or "purging" not in df.columns:
-        return 0, 0.0
-
-    df_sorted = df.sort_values("date").reset_index(drop=True)
-    df_sorted["purging"] = df_sorted["purging"].fillna(False).astype(bool)
-
-    active_streak = 0
-    for i in range(len(df_sorted) - 1, -1, -1):
-        if df_sorted.loc[i, "purging"]:
-            active_streak += 1
-        else:
-            break
-
-    clusters = []
-    current_cluster = 0
-    for val in df_sorted["purging"]:
-        if val:
-            current_cluster += 1
-        else:
-            if current_cluster > 0:
-                clusters.append(current_cluster)
-                current_cluster = 0
-    if current_cluster > 0:
-        clusters.append(current_cluster)
-
-    avg_cluster = sum(clusters) / len(clusters) if clusters else 0.0
-    return active_streak, round(avg_cluster, 1)
-
 # Navigation Menu
 st.sidebar.title("🕌 Safe Haven Menu")
 view_mode = st.sidebar.radio("Navigation", ["📝 Daily Check-in & Space", "🎥 Islamic Reels Feed", "📊 Observer Analytics"])
@@ -268,11 +235,42 @@ view_mode = st.sidebar.radio("Navigation", ["📝 Daily Check-in & Space", "🎥
 # VIEW 1: DAILY CHECK-IN & SPACE
 if view_mode == "📝 Daily Check-in & Space":
     df = load_data()
-    active_streak, avg_cluster = get_purging_cluster_info(df)
 
-    st.markdown("<h2 style='color: #B45309;'>Daily Sanctuary & Tracking</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #B45309;'>Daily Sanctuary & Calendar Space</h2>", unsafe_allow_html=True)
 
-    mood_state = st.radio("Mind & Spirit State Today", ["Depression", "Stable", "Hypomania"], horizontal=True)
+    # Date Selection for Calendar Input/Editing
+    selected_date = st.date_input("📅 Select Date to Write or View Entry", value=date.today())
+    selected_date_str = pd.Timestamp(selected_date).strftime("%Y-%m-%d")
+
+    # Load existing entry if available for selected date
+    existing_entry = df[df["date"] == selected_date_str]
+    
+    default_mood = "Stable"
+    default_sev = 3
+    default_sq = "Medium"
+    default_sh = 7.0
+    default_purging = False
+    default_notes = ""
+
+    if not existing_entry.empty:
+        row = existing_entry.iloc[0]
+        default_mood = row.get("mood_type", "Stable") if pd.notna(row.get("mood_type")) else "Stable"
+        default_sev = int(row.get("mood_severity", 3)) if pd.notna(row.get("mood_severity")) else 3
+        default_sq = row.get("sleep_quality", "Medium") if pd.notna(row.get("sleep_quality")) else "Medium"
+        default_sh = float(row.get("sleep_hours", 7.0)) if pd.notna(row.get("sleep_hours")) else 7.0
+        default_purging = bool(row.get("purging", False)) if pd.notna(row.get("purging")) else False
+        
+        # Pull notes from user_notes or legacy partner_notes
+        if "user_notes" in row and pd.notna(row["user_notes"]):
+            default_notes = row["user_notes"]
+        elif "partner_notes" in row and pd.notna(row["partner_notes"]):
+            default_notes = row["partner_notes"]
+
+        st.info(f"Loaded existing recorded entry for {selected_date_str}.")
+
+    mood_state = st.radio("Mind & Spirit State", ["Depression", "Stable", "Hypomania"], 
+                          index=["Depression", "Stable", "Hypomania"].index(default_mood) if default_mood in ["Depression", "Stable", "Hypomania"] else 1, 
+                          horizontal=True)
 
     quote = ISLAMIC_QUOTES[mood_state]
     st.markdown(
@@ -287,47 +285,55 @@ if view_mode == "📝 Daily Check-in & Space":
         unsafe_allow_html=True,
     )
 
-    with st.form("partner_form"):
-        entry_date = st.date_input("Date", value=date.today())
-        mood_severity = st.slider("Severity level (1 mild → 10 heavy)", 1, 10, 3)
+    with st.form("daily_entry_form"):
+        st.markdown("### ✍️ Entry & Reflections")
+        
+        mood_severity = st.slider("Severity level (1 mild → 10 heavy)", 1, 10, default_sev)
 
         c1, c2 = st.columns(2)
-        sleep_quality = c1.select_slider("Sleep Quality", options=["Bad", "Medium", "Good"], value="Medium")
-        sleep_hours = c2.number_input("Hours Slept", min_value=0.0, max_value=24.0, value=7.0, step=0.5)
+        sq_options = ["Bad", "Medium", "Good"]
+        sleep_quality = c1.select_slider("Sleep Quality", options=sq_options, value=default_sq if default_sq in sq_options else "Medium")
+        sleep_hours = c2.number_input("Hours Slept", min_value=0.0, max_value=24.0, value=default_sh, step=0.5)
 
-        purging_today = st.checkbox("Purging occurred today")
-        ate_meals = st.selectbox("Meals Today", ["All meals", "Partial meals", "Restricted heavily"])
+        purging_today = st.checkbox("Purging occurred today", value=default_purging)
 
-        if st.form_submit_button("Save Today's Entry"):
-            date_str = pd.Timestamp(entry_date).strftime("%Y-%m-%d")
-            existing = df[df["date"] == date_str]
+        # Main Writing & Reflection Space
+        user_notes = st.text_area(
+            "📝 Your Personal Notes & Daily Reflections", 
+            value=default_notes,
+            height=140, 
+            placeholder="Write your thoughts, feelings, reminders, or details about today here..."
+        )
 
-            partner_n = existing["partner_notes"].values[0] if not existing.empty and pd.notna(existing["partner_notes"].values[0]) else ""
-            restr = existing["restriction_observed"].values[0] if not existing.empty else False
-            loc = existing["location_tag"].values[0] if not existing.empty else "Home"
-            trig = existing["trigger_tags"].values[0] if not existing.empty else ""
-            obs_n = existing["observer_notes"].values[0] if not existing.empty else ""
+        if st.form_submit_button("Save Entry for Selected Date"):
+            obs_n = existing_entry["observer_notes"].values[0] if not existing_entry.empty and "observer_notes" in existing_entry.columns and pd.notna(existing_entry["observer_notes"].values[0]) else ""
 
             comp_sev = mood_severity * 1.0 + (2.0 if purging_today else 0.0)
 
             entry = {
-                "date": entry_date,
+                "date": selected_date_str,
                 "mood_type": mood_state,
                 "mood_severity": mood_severity,
                 "sleep_quality": sleep_quality,
                 "sleep_hours": sleep_hours,
                 "purging": purging_today,
-                "partner_notes": partner_n,
-                "ate_meals": ate_meals,
-                "restriction_observed": restr,
-                "location_tag": loc,
-                "trigger_tags": trig,
+                "user_notes": user_notes,
                 "observer_notes": obs_n,
                 "composite_severity": comp_sev,
             }
             save_entry(entry)
-            st.success("Entry saved gracefully.")
+            st.success(f"Entry for {selected_date_str} saved gracefully!")
             st.rerun()
+
+    # Past Records Calendar View
+    st.markdown("---")
+    st.markdown("### 📅 Past Recorded Entries")
+    if not df.empty:
+        display_df = df.copy()
+        display_df = display_df.sort_values("date", ascending=False).reset_index(drop=True)
+        st.dataframe(display_df, use_container_width=True)
+    else:
+        st.info("No recorded entries found yet. Use the form above to save your first entry.")
 
 # VIEW 2: ISLAMIC REELS FEED
 elif view_mode == "🎥 Islamic Reels Feed":
@@ -422,4 +428,4 @@ else:
     if not df.empty:
         st.dataframe(df, use_container_width=True)
     else:
-        st.info("No data recorded yet.")
+        st.info("No data recorded yet in life_chart_data.csv.")
