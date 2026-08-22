@@ -7,51 +7,53 @@ DATA_FILE = "life_chart_data.csv"
 LAB_FILE = "lab_tests.csv"
 REELS_FILE = "reels_data.csv"
 
-# Mobile-First Page Configuration
+# Page Configuration - Expanded Sidebar & Sunset Emerald Theme
 st.set_page_config(
     page_title="Safe Haven & Tracker",
-    page_icon="🌙",
+    page_icon="🕌",
     layout="centered",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
-# Custom CSS for Mobile Reel Architecture
+# Custom Styling: Inspired by Madinah Sunset Gold & Emerald Green Dome
 st.markdown(
     """
     <style>
-    /* Global Container Setup for Mobile Viewports */
+    /* Global Warm Dusk Background */
     [data-testid="stAppViewContainer"], .stApp {
-        background-color: #0F172A !important;
-        color: #F8FAFC !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: linear-gradient(180deg, #1C1816 0%, #12100E 100%) !important;
+        color: #FDFBF7 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     
     /* Header Styling */
     [data-testid="stHeader"] {
-        background-color: rgba(15, 23, 42, 0.8) !important;
+        background-color: rgba(28, 24, 22, 0.85) !important;
         backdrop-filter: blur(8px);
     }
 
-    /* Mobile Sidebar Styling */
+    /* Warm Sandstone Sidebar Styling */
     [data-testid="stSidebar"] {
-        background-color: #1E293B !important;
-        border-right: 1px solid #334155 !important;
+        background: linear-gradient(180deg, #241F1C 0%, #1A1614 100%) !important;
+        border-right: 1px solid #D97706 !important;
     }
 
-    /* Reel Card Container */
+    /* Reel Card - Sandstone Dark & Sunset Gold Border */
     .mobile-reel-card {
-        background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
-        border: 1px solid #334155;
+        background: linear-gradient(145deg, #28221E 0%, #1A221D 100%) !important;
+        border: 1px solid #D97706 !important;
         border-radius: 18px;
         padding: 16px;
         margin-bottom: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
     
+    /* Emerald Dome Category Badge */
     .reel-badge {
         display: inline-block;
-        background-color: #065F46;
-        color: #34D399;
+        background-color: #064E3B !important;
+        color: #6EE7B7 !important;
+        border: 1px solid #10B981 !important;
         font-size: 0.75rem;
         font-weight: 700;
         padding: 4px 10px;
@@ -59,10 +61,12 @@ st.markdown(
         margin-bottom: 8px;
     }
 
+    /* Sunset Gold Language Badge */
     .reel-lang-badge {
         display: inline-block;
-        background-color: #1E3A8A;
-        color: #93C5FD;
+        background-color: #78350F !important;
+        color: #FDE68A !important;
+        border: 1px solid #F59E0B !important;
         font-size: 0.75rem;
         font-weight: 700;
         padding: 4px 10px;
@@ -70,58 +74,60 @@ st.markdown(
         margin-left: 6px;
     }
 
-    /* Islamic Reminders Quote Card */
+    /* Islamic Quote Card - Emerald & Gold Accent */
     .quote-card {
-        background: linear-gradient(135deg, #1E293B 0%, #064E3B 100%) !important;
-        border-left: 5px solid #10B981 !important;
+        background: linear-gradient(135deg, #1A241E 0%, #2A1F18 100%) !important;
+        border-left: 5px solid #F59E0B !important;
+        border-right: 1px solid #047857 !important;
         padding: 18px !important;
         border-radius: 14px !important;
         margin-bottom: 18px !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
     .quote-title {
         font-size: 1.1em !important;
         font-weight: 700 !important;
-        color: #34D399 !important;
+        color: #F59E0B !important;
     }
     .quote-body {
         font-size: 1.25em !important;
         font-style: italic !important;
         margin-top: 8px !important;
-        color: #F8FAFC !important;
+        color: #FDFBF7 !important;
         line-height: 1.6 !important;
         direction: rtl;
         text-align: right;
     }
     .quote-translation {
         font-size: 0.95em !important;
-        color: #FCD34D !important;
+        color: #6EE7B7 !important;
         margin-top: 8px !important;
         direction: ltr;
         text-align: left;
     }
 
-    /* Touch-Optimized Large Buttons */
+    /* Touch-Optimized Emerald & Gold Buttons */
     .stButton>button {
         width: 100% !important;
         height: 48px !important;
         border-radius: 12px !important;
         background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        border: 1px solid #F59E0B !important;
         color: #FFFFFF !important;
         font-weight: 700 !important;
         font-size: 1rem !important;
-        border: none !important;
-        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3) !important;
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25) !important;
     }
     
     .stButton>button:active {
         transform: scale(0.98);
     }
 
-    /* Video Player Mobile Radius */
+    /* Video Player Frame */
     [data-testid="stVideo"] {
         border-radius: 14px !important;
         overflow: hidden !important;
-        border: 1px solid #334155;
+        border: 1px solid #D97706;
     }
     </style>
 """,
@@ -254,14 +260,78 @@ def get_purging_cluster_info(df: pd.DataFrame):
     avg_cluster = sum(clusters) / len(clusters) if clusters else 0.0
     return active_streak, round(avg_cluster, 1)
 
-# Navigation
-st.sidebar.title("📱 Menu")
-view_mode = st.sidebar.radio("View Mode", ["🎥 Islamic Reels Feed", "📝 Daily Check-in & Space", "📊 Observer Analytics"])
+# Navigation Menu
+st.sidebar.title("🕌 Safe Haven Menu")
+view_mode = st.sidebar.radio("Navigation", ["📝 Daily Check-in & Space", "🎥 Islamic Reels Feed", "📊 Observer Analytics"])
 
-# VIEW 1: ISLAMIC REELS FEED
-if view_mode == "🎥 Islamic Reels Feed":
-    st.markdown("<h2 style='text-align: center; color: #34D399; margin-bottom: 4px;'>📱 Islamic Reels</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94A3B8; font-size: 0.9em;'>Short Educational Clips in Arabic & English</p>", unsafe_allow_html=True)
+# VIEW 1: DAILY CHECK-IN & SPACE
+if view_mode == "📝 Daily Check-in & Space":
+    df = load_data()
+    active_streak, avg_cluster = get_purging_cluster_info(df)
+
+    st.markdown("<h2 style='color: #F59E0B;'>Daily Sanctuary & Tracking</h2>", unsafe_allow_html=True)
+
+    mood_state = st.radio("Mind & Spirit State Today", ["Depression", "Stable", "Hypomania"], horizontal=True)
+
+    quote = ISLAMIC_QUOTES[mood_state]
+    st.markdown(
+        f"""
+        <div class="quote-card">
+            <div class="quote-title">{quote['title']}</div>
+            <div class="quote-body">{quote['verse']}</div>
+            <div class="quote-translation">{quote['translation']}</div>
+            <p style="color:#FDE68A; font-size:0.85em; margin-top:8px;">{quote['ref']}</p>
+        </div>
+    """,
+        unsafe_allow_html=True,
+    )
+
+    with st.form("partner_form"):
+        entry_date = st.date_input("Date", value=date.today())
+        mood_severity = st.slider("Severity level (1 mild → 10 heavy)", 1, 10, 3)
+
+        c1, c2 = st.columns(2)
+        sleep_quality = c1.select_slider("Sleep Quality", options=["Bad", "Medium", "Good"], value="Medium")
+        sleep_hours = c2.number_input("Hours Slept", min_value=0.0, max_value=24.0, value=7.0, step=0.5)
+
+        purging_today = st.checkbox("Purging occurred today")
+        ate_meals = st.selectbox("Meals Today", ["All meals", "Partial meals", "Restricted heavily"])
+
+        if st.form_submit_button("Save Today's Entry"):
+            date_str = pd.Timestamp(entry_date).strftime("%Y-%m-%d")
+            existing = df[df["date"] == date_str]
+
+            partner_n = existing["partner_notes"].values[0] if not existing.empty and pd.notna(existing["partner_notes"].values[0]) else ""
+            restr = existing["restriction_observed"].values[0] if not existing.empty else False
+            loc = existing["location_tag"].values[0] if not existing.empty else "Home"
+            trig = existing["trigger_tags"].values[0] if not existing.empty else ""
+            obs_n = existing["observer_notes"].values[0] if not existing.empty else ""
+
+            comp_sev = mood_severity * 1.0 + (2.0 if purging_today else 0.0)
+
+            entry = {
+                "date": entry_date,
+                "mood_type": mood_state,
+                "mood_severity": mood_severity,
+                "sleep_quality": sleep_quality,
+                "sleep_hours": sleep_hours,
+                "purging": purging_today,
+                "partner_notes": partner_n,
+                "ate_meals": ate_meals,
+                "restriction_observed": restr,
+                "location_tag": loc,
+                "trigger_tags": trig,
+                "observer_notes": obs_n,
+                "composite_severity": comp_sev,
+            }
+            save_entry(entry)
+            st.success("Entry saved gracefully.")
+            st.rerun()
+
+# VIEW 2: ISLAMIC REELS FEED
+elif view_mode == "🎥 Islamic Reels Feed":
+    st.markdown("<h2 style='text-align: center; color: #F59E0B; margin-bottom: 4px;'>📱 Islamic Reels</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #FDE68A; font-size: 0.9em;'>Short Educational Clips & Reminders</p>", unsafe_allow_html=True)
 
     reels_df = load_reels()
 
@@ -297,8 +367,8 @@ if view_mode == "🎥 Islamic Reels Feed":
                     <span class="reel-badge">{current_reel['category']}</span>
                     <span class="reel-lang-badge">🌐 {current_reel['language']}</span>
                 </div>
-                <h3 style="color:#F8FAFC; margin:6px 0 2px 0; font-size: 1.1rem; line-height:1.4;">{current_reel['title']}</h3>
-                <p style="color:#94A3B8; font-size:0.8rem; margin:0;">Shared by: {current_reel['added_by']}</p>
+                <h3 style="color:#FDFBF7; margin:6px 0 2px 0; font-size: 1.1rem; line-height:1.4;">{current_reel['title']}</h3>
+                <p style="color:#FDE68A; font-size:0.8rem; margin:0;">Shared by: {current_reel['added_by']}</p>
             </div>
         """,
             unsafe_allow_html=True,
@@ -312,7 +382,7 @@ if view_mode == "🎥 Islamic Reels Feed":
                 st.session_state.reel_idx = (st.session_state.reel_idx - 1) % len(filtered_reels)
                 st.rerun()
         with c_count:
-            st.markdown(f"<p style='text-align:center; margin-top:12px; font-weight:bold; color:#94A3B8;'>{st.session_state.reel_idx + 1} / {len(filtered_reels)}</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='text-align:center; margin-top:12px; font-weight:bold; color:#F59E0B;'>{st.session_state.reel_idx + 1} / {len(filtered_reels)}</p>", unsafe_allow_html=True)
         with c_next:
             if st.button("Next ⏭️"):
                 st.session_state.reel_idx = (st.session_state.reel_idx + 1) % len(filtered_reels)
@@ -325,7 +395,7 @@ if view_mode == "🎥 Islamic Reels Feed":
     with st.expander("➕ Share a New Islamic Reel / Video"):
         with st.form("add_reel_form"):
             r_title = st.text_input("Title (العنوان)", placeholder="e.g., Tafseer of Ayatul Kursi")
-            r_url = st.text_input("Video Link", placeholder="YouTube Shorts, TikTok, or MP4 URL")
+            r_url = st.text_input("Video Link", placeholder="YouTube Shorts or Video URL")
             r_cat = st.selectbox("Topic Category", ["Quran & Tafseer (القرآن والتفسير)", "Hadith & Sunnah (الحديث والسنة)", "Reminders & Grounding (رقائق وتذكير)", "Fiqh & Daily Life (الفقه والأحكام)"])
             r_lang = st.selectbox("Language (اللغة)", ["Arabic", "English", "Arabic / English"])
             r_author = st.text_input("Your Name / Note", value="Partner")
@@ -338,70 +408,6 @@ if view_mode == "🎥 Islamic Reels Feed":
                 else:
                     st.warning("Please enter both a title and a valid URL.")
 
-# VIEW 2: DAILY CHECK-IN & SPACE
-elif view_mode == "📝 Daily Check-in & Space":
-    df = load_data()
-    active_streak, avg_cluster = get_purging_cluster_info(df)
-
-    st.markdown("<h2 style='color: #34D399;'>Daily Space</h2>", unsafe_allow_html=True)
-
-    mood_state = st.radio("Mind & Spirit State Today", ["Depression", "Stable", "Hypomania"], horizontal=True)
-
-    quote = ISLAMIC_QUOTES[mood_state]
-    st.markdown(
-        f"""
-        <div class="quote-card">
-            <div class="quote-title">{quote['title']}</div>
-            <div class="quote-body">{quote['verse']}</div>
-            <div class="quote-translation">{quote['translation']}</div>
-            <p style="color:#94A3B8; font-size:0.85em; margin-top:8px;">{quote['ref']}</p>
-        </div>
-    """,
-        unsafe_allow_html=True,
-    )
-
-    with st.form("partner_form"):
-        entry_date = st.date_input("Date", value=date.today())
-        mood_severity = st.slider("Severity level (1 mild → 10 heavy)", 1, 10, 3)
-
-        c1, c2 = st.columns(2)
-        sleep_quality = c1.select_slider("Sleep Quality", options=["Bad", "Medium", "Good"], value="Medium")
-        sleep_hours = c2.number_input("Hours Slept", min_value=0.0, max_value=24.0, value=7.0, step=0.5)
-
-        purging_today = st.checkbox("Purging occurred today")
-
-        if st.form_submit_button("Save Today's Entry"):
-            date_str = pd.Timestamp(entry_date).strftime("%Y-%m-%d")
-            existing = df[df["date"] == date_str]
-
-            partner_n = existing["partner_notes"].values[0] if not existing.empty and pd.notna(existing["partner_notes"].values[0]) else ""
-            ate = existing["ate_meals"].values[0] if not existing.empty else "All meals"
-            restr = existing["restriction_observed"].values[0] if not existing.empty else False
-            loc = existing["location_tag"].values[0] if not existing.empty else "Home"
-            trig = existing["trigger_tags"].values[0] if not existing.empty else ""
-            obs_n = existing["observer_notes"].values[0] if not existing.empty else ""
-
-            comp_sev = mood_severity * 1.0 + (2.0 if purging_today else 0.0)
-
-            entry = {
-                "date": entry_date,
-                "mood_type": mood_state,
-                "mood_severity": mood_severity,
-                "sleep_quality": sleep_quality,
-                "sleep_hours": sleep_hours,
-                "purging": purging_today,
-                "partner_notes": partner_n,
-                "ate_meals": ate,
-                "restriction_observed": restr,
-                "location_tag": loc,
-                "trigger_tags": trig,
-                "observer_notes": obs_n,
-                "composite_severity": comp_sev,
-            }
-            save_entry(entry)
-            st.success("Logged gently.")
-            st.rerun()
-
 # VIEW 3: OBSERVER ANALYTICS
 else:
     pin = st.sidebar.text_input("Passkey", type="password")
@@ -409,7 +415,7 @@ else:
         st.error("Access restricted.")
         st.stop()
 
-    st.markdown("<h2 style='color: #34D399;'>Observer Dashboard</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #F59E0B;'>Observer Dashboard</h2>", unsafe_allow_html=True)
     df = load_data()
 
     if not df.empty:
