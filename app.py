@@ -134,6 +134,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Strict tracking fields: NO meal tracking, NO notes
 COLUMNS = [
     "date",
     "mood_type",
@@ -141,7 +142,6 @@ COLUMNS = [
     "sleep_quality",
     "sleep_hours",
     "purging",
-    "user_notes",
 ]
 
 DEFAULT_REELS = [
@@ -194,6 +194,7 @@ def load_data() -> pd.DataFrame:
         df = pd.read_csv(DATA_FILE)
         if "date" in df.columns and not df.empty:
             df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
+        # Ensure only strict COLUMNS exist
         for col in COLUMNS:
             if col not in df.columns:
                 df[col] = None
@@ -238,7 +239,7 @@ if view_mode == "📝 Calendar & Daily Tracker":
     st.markdown("<h2 style='color: #B45309;'>Daily Sanctuary</h2>", unsafe_allow_html=True)
 
     # Date Picker: Pick any date to enter or edit data
-    selected_date = st.date_input("📅 Select Date to Write or View Entry", value=date.today())
+    selected_date = st.date_input("📅 Select Date to View or Update Entry", value=date.today())
     selected_date_str = pd.Timestamp(selected_date).strftime("%Y-%m-%d")
 
     # Load existing data for selected date if available
@@ -249,7 +250,6 @@ if view_mode == "📝 Calendar & Daily Tracker":
     def_sq = "Medium"
     def_sh = 7.0
     def_purging = False
-    def_notes = ""
 
     if not existing.empty:
         row = existing.iloc[0]
@@ -258,7 +258,6 @@ if view_mode == "📝 Calendar & Daily Tracker":
         def_sq = row.get("sleep_quality") if pd.notna(row.get("sleep_quality")) else "Medium"
         def_sh = float(row.get("sleep_hours", 7.0)) if pd.notna(row.get("sleep_hours")) else 7.0
         def_purging = bool(row.get("purging", False)) if pd.notna(row.get("purging")) else False
-        def_notes = str(row.get("user_notes", "")) if pd.notna(row.get("user_notes")) else ""
 
         st.info(f"Loaded existing saved entry for {selected_date_str}.")
 
@@ -292,14 +291,6 @@ if view_mode == "📝 Calendar & Daily Tracker":
 
         purging_today = st.checkbox("Purging occurred today", value=def_purging)
 
-        # Personal Writing Area
-        user_notes = st.text_area(
-            "📝 Personal Notes & Journal Space", 
-            value=def_notes,
-            height=160, 
-            placeholder="Write your thoughts, feelings, reflections, or reminders for this date..."
-        )
-
         if st.form_submit_button("Save Entry for Selected Date"):
             entry = {
                 "date": selected_date_str,
@@ -308,7 +299,6 @@ if view_mode == "📝 Calendar & Daily Tracker":
                 "sleep_quality": sleep_quality,
                 "sleep_hours": sleep_hours,
                 "purging": purging_today,
-                "user_notes": user_notes,
             }
             save_entry(entry)
             st.success(f"Entry for {selected_date_str} successfully saved!")
@@ -384,7 +374,7 @@ elif view_mode == "🎥 Islamic Reels Feed":
             r_url = st.text_input("Video Link", placeholder="YouTube Shorts or Video URL")
             r_cat = st.selectbox("Topic Category", ["Quran & Tafseer (القرآن والتفسير)", "Hadith & Sunnah (الحديث والسنة)", "Reminders & Grounding (رقائق وتذكير)", "Fiqh & Daily Life (الفقه والأحكام)"])
             r_lang = st.selectbox("Language (اللغة)", ["Arabic", "English", "Arabic / English"])
-            r_author = st.text_input("Your Name / Note", value="Self")
+            r_author = st.text_input("Your Name / Label", value="User")
 
             if st.form_submit_button("Add Reel to Feed"):
                 if r_title and r_url:
