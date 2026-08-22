@@ -3,6 +3,10 @@ from datetime import date, datetime, timedelta
 import pandas as pd
 import streamlit as st
 
+DATA_FILE = "life_chart_data.csv"
+LAB_FILE = "lab_tests.csv"
+
+st.set_page_config(page_title="Safe Haven & Tracker", layout="wide", initial_sidebar_state="expanded")
 
 # Custom Warm Theme Styling for Partner View
 st.markdown(
@@ -68,7 +72,7 @@ ISLAMIC_QUOTES = {
     },
     "Hypomania": {
         "title": "A Gentle Grounding",
-        "verse": "« وَاقْصِدْ فِي مَشْيِكَ وَاغْضُضْ مِن صَوْتِكَ »",
+        "verse": "« وَاقْصِدْ فِي مَشْيِكَ وَاغْضُضْ مِن صَوْتِك »",
         "translation": "'And be moderate in your pace and lower your voice...' (Quran 31:19)",
         "ref": "Pause, take a deep breath, and let your body move at a calm, deliberate rhythm.",
     },
@@ -111,14 +115,12 @@ def save_entry(entry: dict):
 
 
 def get_purging_cluster_info(df: pd.DataFrame):
-    """Calculates active purging cluster streak and historical average duration."""
     if df.empty or "purging" not in df.columns:
         return 0, 0.0
 
     df_sorted = df.sort_values("date").reset_index(drop=True)
     df_sorted["purging"] = df_sorted["purging"].fillna(False).astype(bool)
 
-    # Active cluster check
     active_streak = 0
     for i in range(len(df_sorted) - 1, -1, -1):
         if df_sorted.loc[i, "purging"]:
@@ -126,7 +128,6 @@ def get_purging_cluster_info(df: pd.DataFrame):
         else:
             break
 
-    # Historical cluster calculation
     clusters = []
     current_cluster = 0
     for val in df_sorted["purging"]:
@@ -160,10 +161,8 @@ if view_mode == "Partner View (Daily Space)":
 
     st.title("Daily Check-in")
 
-    # Quick Mood Selection for Dynamic Quote
     mood_state = st.radio("How is your mind feeling today?", ["Depression", "Stable", "Hypomania"], horizontal=True)
 
-    # Render Mood-Adaptive Quran Card
     quote = ISLAMIC_QUOTES[mood_state]
     st.markdown(
         f"""
@@ -197,14 +196,12 @@ if view_mode == "Partner View (Daily Space)":
             date_str = pd.Timestamp(entry_date).strftime("%Y-%m-%d")
             existing = df[df["date"] == date_str]
 
-            # Preserve Observer fields if already set
             ate = existing["ate_meals"].values[0] if not existing.empty else "All meals"
             restr = existing["restriction_observed"].values[0] if not existing.empty else False
             loc = existing["location_tag"].values[0] if not existing.empty else "Home"
             trig = existing["trigger_tags"].values[0] if not existing.empty else ""
             obs_n = existing["observer_notes"].values[0] if not existing.empty else ""
 
-            # Calculate composite severity for observer side
             comp_sev = mood_severity * 1.0 + (2.0 if purging_today else 0.0)
 
             entry = {
@@ -226,7 +223,6 @@ if view_mode == "Partner View (Daily Space)":
             st.success("Saved gently.")
             st.rerun()
 
-    # Active Purging Cluster Indicator (Low Invasive Banner)
     if purging_today or active_streak > 0:
         st.markdown(
             f"""
@@ -238,7 +234,6 @@ if view_mode == "Partner View (Daily Space)":
             unsafe_allow_html=True,
         )
 
-    # Comfort & Micro-Learning Hub
     st.markdown("---")
     st.subheader("Comfort & Learning Corner")
     tab_math, tab_history = st.tabs(["Math & Science Bytes", "Your Logged History"])
@@ -261,7 +256,6 @@ else:
     st.title("Observer Control & Predictive Dashboard")
     tab1, tab2, tab3 = st.tabs(["Meal & Context Logger", "Predictive Risk & Triggers", "Lithium Lab Countdown"])
 
-    # --- TAB 1: Meal & Context Entry
     with tab1:
         st.subheader("Log Meal Intake & Observer Context")
         df = load_data()
@@ -307,7 +301,6 @@ else:
                 save_entry(base_entry)
                 st.success("Observer context appended successfully.")
 
-    # --- TAB 2: Predictive Risk & Trigger Correlations
     with tab2:
         df = load_data()
         if df.empty:
@@ -318,7 +311,6 @@ else:
 
             st.subheader("Trigger-to-Restriction Lag & Probability Engine")
 
-            # 24-48h Trigger Lag Calculation
             df["has_trigger"] = df["trigger_tags"].apply(lambda x: True if pd.notna(x) and len(str(x)) > 0 else False)
             df["restr_next_48h"] = df["restriction_observed"].shift(-1).fillna(False) | df["restriction_observed"].shift(-2).fillna(False)
 
@@ -347,7 +339,6 @@ else:
 
                 st.dataframe(summary[["Trigger", "Logged_Days", "Average Severity", "Confidence"]].sort_values("Logged_Days", ascending=False), use_container_width=True)
 
-    # --- TAB 3: Lithium Lab Countdown
     with tab3:
         st.subheader("Serum Lithium & Clinical Schedule")
         labs_df = load_labs()
