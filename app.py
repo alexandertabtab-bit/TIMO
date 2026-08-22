@@ -1,5 +1,5 @@
 import os
-from datetime import date, datetime, timedelta
+from datetime import date
 import pandas as pd
 import streamlit as st
 
@@ -14,7 +14,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom Styling: Bright Light Sandstone, Sunset Gold & Emerald Green Accent
+# Custom Styling: Soft Light Sandstone, Sunset Gold & Emerald Green Accent
 st.markdown(
     """
     <style>
@@ -142,8 +142,6 @@ COLUMNS = [
     "sleep_hours",
     "purging",
     "user_notes",
-    "observer_notes",
-    "composite_severity",
 ]
 
 DEFAULT_REELS = [
@@ -199,14 +197,15 @@ def load_data() -> pd.DataFrame:
         for col in COLUMNS:
             if col not in df.columns:
                 df[col] = None
+        return df[COLUMNS]
     else:
-        df = pd.DataFrame(columns=COLUMNS)
-    return df
+        return pd.DataFrame(columns=COLUMNS)
 
 def save_entry(entry: dict):
     df = load_data()
     entry_date_str = pd.Timestamp(entry["date"]).strftime("%Y-%m-%d")
     entry["date"] = entry_date_str
+    
     df = df[df["date"] != entry_date_str]
     df = pd.concat([df, pd.DataFrame([entry])], ignore_index=True)
     df = df.sort_values("date")
@@ -230,47 +229,45 @@ def save_reel(title: str, url: str, category: str, language: str, added_by: str)
 
 # Navigation Menu
 st.sidebar.title("🕌 Safe Haven Menu")
-view_mode = st.sidebar.radio("Navigation", ["📝 Daily Check-in & Space", "🎥 Islamic Reels Feed", "📊 Observer Analytics"])
+view_mode = st.sidebar.radio("Navigation", ["📝 Calendar & Daily Tracker", "🎥 Islamic Reels Feed", "🔒 Protected Logs"])
 
-# VIEW 1: DAILY CHECK-IN & SPACE
-if view_mode == "📝 Daily Check-in & Space":
+# VIEW 1: CALENDAR & DAILY TRACKER
+if view_mode == "📝 Calendar & Daily Tracker":
     df = load_data()
 
-    st.markdown("<h2 style='color: #B45309;'>Daily Sanctuary & Calendar Space</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #B45309;'>Daily Sanctuary</h2>", unsafe_allow_html=True)
 
-    # Date Selection for Calendar Input/Editing
+    # Date Picker: Pick any date to enter or edit data
     selected_date = st.date_input("📅 Select Date to Write or View Entry", value=date.today())
     selected_date_str = pd.Timestamp(selected_date).strftime("%Y-%m-%d")
 
-    # Load existing entry if available for selected date
-    existing_entry = df[df["date"] == selected_date_str]
+    # Load existing data for selected date if available
+    existing = df[df["date"] == selected_date_str]
     
-    default_mood = "Stable"
-    default_sev = 3
-    default_sq = "Medium"
-    default_sh = 7.0
-    default_purging = False
-    default_notes = ""
+    def_mood = "Stable"
+    def_sev = 3
+    def_sq = "Medium"
+    def_sh = 7.0
+    def_purging = False
+    def_notes = ""
 
-    if not existing_entry.empty:
-        row = existing_entry.iloc[0]
-        default_mood = row.get("mood_type", "Stable") if pd.notna(row.get("mood_type")) else "Stable"
-        default_sev = int(row.get("mood_severity", 3)) if pd.notna(row.get("mood_severity")) else 3
-        default_sq = row.get("sleep_quality", "Medium") if pd.notna(row.get("sleep_quality")) else "Medium"
-        default_sh = float(row.get("sleep_hours", 7.0)) if pd.notna(row.get("sleep_hours")) else 7.0
-        default_purging = bool(row.get("purging", False)) if pd.notna(row.get("purging")) else False
-        
-        # Pull notes from user_notes or legacy partner_notes
-        if "user_notes" in row and pd.notna(row["user_notes"]):
-            default_notes = row["user_notes"]
-        elif "partner_notes" in row and pd.notna(row["partner_notes"]):
-            default_notes = row["partner_notes"]
+    if not existing.empty:
+        row = existing.iloc[0]
+        def_mood = row.get("mood_type") if pd.notna(row.get("mood_type")) else "Stable"
+        def_sev = int(row.get("mood_severity", 3)) if pd.notna(row.get("mood_severity")) else 3
+        def_sq = row.get("sleep_quality") if pd.notna(row.get("sleep_quality")) else "Medium"
+        def_sh = float(row.get("sleep_hours", 7.0)) if pd.notna(row.get("sleep_hours")) else 7.0
+        def_purging = bool(row.get("purging", False)) if pd.notna(row.get("purging")) else False
+        def_notes = str(row.get("user_notes", "")) if pd.notna(row.get("user_notes")) else ""
 
-        st.info(f"Loaded existing recorded entry for {selected_date_str}.")
+        st.info(f"Loaded existing saved entry for {selected_date_str}.")
 
-    mood_state = st.radio("Mind & Spirit State", ["Depression", "Stable", "Hypomania"], 
-                          index=["Depression", "Stable", "Hypomania"].index(default_mood) if default_mood in ["Depression", "Stable", "Hypomania"] else 1, 
-                          horizontal=True)
+    mood_state = st.radio(
+        "Mind & Spirit State", 
+        ["Depression", "Stable", "Hypomania"], 
+        index=["Depression", "Stable", "Hypomania"].index(def_mood) if def_mood in ["Depression", "Stable", "Hypomania"] else 1,
+        horizontal=True
+    )
 
     quote = ISLAMIC_QUOTES[mood_state]
     st.markdown(
@@ -286,30 +283,24 @@ if view_mode == "📝 Daily Check-in & Space":
     )
 
     with st.form("daily_entry_form"):
-        st.markdown("### ✍️ Entry & Reflections")
-        
-        mood_severity = st.slider("Severity level (1 mild → 10 heavy)", 1, 10, default_sev)
+        mood_severity = st.slider("Severity level (1 mild → 10 heavy)", 1, 10, def_sev)
 
         c1, c2 = st.columns(2)
         sq_options = ["Bad", "Medium", "Good"]
-        sleep_quality = c1.select_slider("Sleep Quality", options=sq_options, value=default_sq if default_sq in sq_options else "Medium")
-        sleep_hours = c2.number_input("Hours Slept", min_value=0.0, max_value=24.0, value=default_sh, step=0.5)
+        sleep_quality = c1.select_slider("Sleep Quality", options=sq_options, value=def_sq if def_sq in sq_options else "Medium")
+        sleep_hours = c2.number_input("Hours Slept", min_value=0.0, max_value=24.0, value=def_sh, step=0.5)
 
-        purging_today = st.checkbox("Purging occurred today", value=default_purging)
+        purging_today = st.checkbox("Purging occurred today", value=def_purging)
 
-        # Main Writing & Reflection Space
+        # Personal Writing Area
         user_notes = st.text_area(
-            "📝 Your Personal Notes & Daily Reflections", 
-            value=default_notes,
-            height=140, 
-            placeholder="Write your thoughts, feelings, reminders, or details about today here..."
+            "📝 Personal Notes & Journal Space", 
+            value=def_notes,
+            height=160, 
+            placeholder="Write your thoughts, feelings, reflections, or reminders for this date..."
         )
 
         if st.form_submit_button("Save Entry for Selected Date"):
-            obs_n = existing_entry["observer_notes"].values[0] if not existing_entry.empty and "observer_notes" in existing_entry.columns and pd.notna(existing_entry["observer_notes"].values[0]) else ""
-
-            comp_sev = mood_severity * 1.0 + (2.0 if purging_today else 0.0)
-
             entry = {
                 "date": selected_date_str,
                 "mood_type": mood_state,
@@ -318,22 +309,10 @@ if view_mode == "📝 Daily Check-in & Space":
                 "sleep_hours": sleep_hours,
                 "purging": purging_today,
                 "user_notes": user_notes,
-                "observer_notes": obs_n,
-                "composite_severity": comp_sev,
             }
             save_entry(entry)
-            st.success(f"Entry for {selected_date_str} saved gracefully!")
+            st.success(f"Entry for {selected_date_str} successfully saved!")
             st.rerun()
-
-    # Past Records Calendar View
-    st.markdown("---")
-    st.markdown("### 📅 Past Recorded Entries")
-    if not df.empty:
-        display_df = df.copy()
-        display_df = display_df.sort_values("date", ascending=False).reset_index(drop=True)
-        st.dataframe(display_df, use_container_width=True)
-    else:
-        st.info("No recorded entries found yet. Use the form above to save your first entry.")
 
 # VIEW 2: ISLAMIC REELS FEED
 elif view_mode == "🎥 Islamic Reels Feed":
@@ -405,7 +384,7 @@ elif view_mode == "🎥 Islamic Reels Feed":
             r_url = st.text_input("Video Link", placeholder="YouTube Shorts or Video URL")
             r_cat = st.selectbox("Topic Category", ["Quran & Tafseer (القرآن والتفسير)", "Hadith & Sunnah (الحديث والسنة)", "Reminders & Grounding (رقائق وتذكير)", "Fiqh & Daily Life (الفقه والأحكام)"])
             r_lang = st.selectbox("Language (اللغة)", ["Arabic", "English", "Arabic / English"])
-            r_author = st.text_input("Your Name / Note", value="Partner")
+            r_author = st.text_input("Your Name / Note", value="Self")
 
             if st.form_submit_button("Add Reel to Feed"):
                 if r_title and r_url:
@@ -415,17 +394,21 @@ elif view_mode == "🎥 Islamic Reels Feed":
                 else:
                     st.warning("Please enter both a title and a valid URL.")
 
-# VIEW 3: OBSERVER ANALYTICS
+# VIEW 3: PROTECTED LOGS
 else:
-    pin = st.sidebar.text_input("Passkey", type="password")
-    if pin != "1234" and pin != "":
-        st.error("Access restricted.")
-        st.stop()
-
-    st.markdown("<h2 style='color: #B45309;'>Observer Dashboard</h2>", unsafe_allow_html=True)
-    df = load_data()
-
-    if not df.empty:
-        st.dataframe(df, use_container_width=True)
+    st.markdown("<h2 style='color: #B45309;'>🔒 Passkey Protected Logs</h2>", unsafe_allow_html=True)
+    
+    pin = st.text_input("Enter Passkey to View Full Log History", type="password")
+    
+    if pin == "1234":
+        st.success("Access Granted.")
+        df = load_data()
+        if not df.empty:
+            display_df = df.sort_values("date", ascending=False).reset_index(drop=True)
+            st.dataframe(display_df, use_container_width=True)
+        else:
+            st.info("No entries recorded yet in life_chart_data.csv.")
+    elif pin != "":
+        st.error("Access restricted. Incorrect passkey.")
     else:
-        st.info("No data recorded yet in life_chart_data.csv.")
+        st.warning("Please enter your passkey above to unlock.")
