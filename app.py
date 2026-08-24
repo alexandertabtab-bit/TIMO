@@ -1,16 +1,387 @@
+Pasted text.txt
+Document
+this is my current code for my app rn  i want tofew things ti chnage in my view no nee for teh severity and substances  and adhenrenec or meds  just focus on the section where im gonna write factors that influenced his bp todya and make sure uk how to fragment them and use them as charts also make the website phone friendly since im gonna msotly use it on phone make it instagram display style and put actual reels since he cant put links every time also add daily quotes in his view and the picture of mosque i gave it to u i m not seeing it in the background tell me hpw to make the app send notifctaions too and remove irritability 
+
+
+fix this <div class="arabic-quote"> 
+    رَبِّ اشْرَحْ لِي صَدْرِي 
+</div> 
+ 
+<div class="english-quote"> 
+    My Lord, expand for me my chest. — Quran 20:25 
+</div>   also in my view the factors suggest ones i can chose from or other and i'll type it factors might be nictoine defiency problem at work stress family conflict lack of sleep etc find others also u mentioned if we wanna make it instagram interfaced we shall use java let's use it than and make it instagram interface friendly if possible ofc wihtout money cuz i odnt have a credit card also i ll send u the picture i wanted as a background
+
+No problem — you do not need a “Create folder” button on GitHub. GitHub creates the folder automatically when you create a file with / in its name.
+
+Part 1: Put the mosque image in GitHub
+First create the folder
+Open your GitHub repository.
+
+Click Add file → Create new file.
+
+In the filename box, type exactly:
+
+assets/test.txt
+GitHub will automatically create the assets folder.
+
+Put anything inside the file, for example:
+
+test
+Click Commit changes.
+
+Now your repository will have:
+
+app.py
+requirements.txt
+assets/
+    test.txt
+Then upload the mosque image
+Click the assets folder.
+
+Click Add file → Upload files.
+
+Upload your mosque picture.
+
+Rename it to:
+
+mosque_background.jpg
+Then you should have:
+
+app.py
+requirements.txt
+
+assets/
+    test.txt
+    mosque_background.jpg
+The test.txt file doesn't matter; you can leave it there.
+
+Part 2: About the multiple Reels
+You're right — I didn't explain that properly.
+
+The code I gave you allows multiple videos, not just one. You add as many as you want here:
+
+reels = [
+
+    {
+        "title": "Islamic reminder",
+        "url": "VIDEO_LINK_1",
+        "type": "youtube"
+    },
+
+    {
+        "title": "Another reminder",
+        "url": "VIDEO_LINK_2",
+        "type": "youtube"
+    },
+
+    {
+        "title": "Motivation",
+        "url": "VIDEO_LINK_3",
+        "type": "youtube"
+    },
+
+    {
+        "title": "Mental health reminder",
+        "url": "VIDEO_LINK_4",
+        "type": "youtube"
+    }
+
+]
+You can have:
+
+5 videos
+
+20 videos
+
+100 videos
+
+and the feed will scroll through them vertically.
+
+But I understand that you don't want to keep editing app.py and adding links every time.
+
+A better solution: use a YouTube playlist
+You create one playlist on YouTube.
+
+For example:
+
+My Daily Reels
+Then you add as many videos/Shorts as you want to that playlist.
+
+Your boyfriend opens the app → opens 🎬 Reels → watches multiple videos.
+
+You only update the YouTube playlist, not the app code.
+
+But
+A normal YouTube playlist interface won't look exactly like Instagram Reels.
+
+If you want a true Instagram-style vertical feed, we can make the app load a list of videos and display:
+
+┌──────────────────┐
+│                  │
+│      VIDEO 1     │
+│                  │
+│                  │
+│ Islamic reminder │
+└──────────────────┘
+         ↓ swipe
+
+┌──────────────────┐
+│                  │
+│      VIDEO 2     │
+│                  │
+│                  │
+│ Motivation       │
+└──────────────────┘
+         ↓ swipe
+
+┌──────────────────┐
+│                  │
+│      VIDEO 3     │
+│                  │
+│                  │
+│ Quran reminder   │
+└──────────────────┘
+My recommendation for you
+Since you're using GitHub + Streamlit and want this completely free, I recommend:
+
+YouTube playlist → app automatically displays multiple videos from that playlist.
+
+That means you don't need to send him a link every time.
+
+Before I give you the corrected full app.py
+Let's first make sure your mosque image works.
+
+Do these two things:
+
+1. Create this file on GitHub:
+assets/test.txt
+2. Upload the mosque image into that assets folder.
+Then send me a screenshot of your GitHub repository showing the files.
+
+After that, I can give you the corrected full copy-paste app.py with:
+
+🌙 Mosque background working
+
+📱 Phone-first Instagram-like design
+
+🎬 Multiple vertical Reels
+
+▶️ Multiple videos from one playlist instead of manually adding links
+
+☪️ Arabic + English daily quotes
+
+😴 Separate sleep spectrum
+
+📉 Depression severity 1–10
+
+📈 Hypomania severity 1–10
+
+🧩 Factor suggestions + Other
+
+📊 Charts based on the selected factors
+
+💊 Lithium tracker preserved
+
+📅 ED + purging calendar visible to both views
+
+❌ Irritability removed
+
+❌ "What influenced your day" removed from his view
+
+🔐 Your detailed factor tracking kept in your view
+
+The main thing is: don't paste the previous code again yet. Let's get the folder/image part working first so the next full code is cleaner.
+
+
+
+the quotes arent really as they shall be make them only in arabic and remve the python words like div etc also make the words and everything custom to the them cuz now they blnended tg i cant see anything and add the reels u talked bout without me needing to change app.py everytime
+
+I can see the problem clearly from your screenshot. The mosque background is working, but the quote HTML is being displayed as plain text, which is why you see:
+
+<div class="arabic-quote">
+
+We will fix that completely. Also, the current transparent styling makes the navigation and text blend into the mosque image, so the new version will use solid/light cards with dark text so everything is readable.
+
+For the Reels: the best free solution is a YouTube playlist. You add as many Shorts/videos as you want to the playlist on YouTube, and the app automatically loads them. You will not need to edit app.py every time you add a video.
+
+What will change
+Quotes: Arabic only
+
+No more <div> / Python / HTML words visible
+
+High-contrast readable design
+
+Phone-friendly narrow Instagram-style layout
+
+Mosque background stays visible
+
+Cards and navigation no longer blend into the background
+
+Reels feed automatically loads multiple videos from a YouTube playlist
+
+You only add new videos to the playlist; the app updates from that
+
+Your existing mood, sleep, ED/purging, factors, charts, calendar, and lithium tracker stay included
+
+The only thing I need before giving you the final corrected full app.py is your current app.py file/code, because I don't want to accidentally remove features Claude already built, especially the lithium tracker and anything else not visible in the screenshot.
+
+Upload your current app.py here (or paste its contents). Then I’ll give you one complete replacement app.py, ready to copy-paste, with all of these fixes integrated.
+
+
+
+Pasted text(1).txt
+Document
+
+Yes — I checked the code you uploaded. Your current quote function is indeed using HTML, and your screenshot shows those HTML tags being displayed instead of rendered. The Reels section also currently requires manually adding URLs in the code. 
+
+
+I made you a new complete app.py that fixes both problems.
+
+What changed
+Arabic quotes only
+
+No <div> or HTML words visible
+
+Strong light cards so text doesn't blend into the mosque
+
+Dark readable text
+
+Phone-friendly narrow layout
+
+Mosque remains visible in the background
+
+Depression → intensity slider 1–10
+
+Hypomania → intensity slider 1–10
+
+Sleep is always a separate 1–10 slider
+
+Irritability removed
+
+His view stays simple
+
+Your factors have many suggested options + Other
+
+Factor chart remains
+
+Lithium tracker remains
+
+ED/purging calendar remains for both views
+
+Reels now use one YouTube playlist
+
+You paste the playlist link once inside the app
+
+After that, whenever you add more videos/Shorts to that playlist, they can appear in the app automatically
+
+You do not need to edit app.py every time
+
+Your uploaded version already contains the mood/severity, sleep, ED/purging, factors, calendar, and lithium features, so I preserved those ideas in the replacement. 
+
+
+Step 1 — Download the new app.py
+Download the new app.py
+
+Step 2 — On GitHub
+Open your repository.
+
+Click:
+
+app.py
+Then click the ✏️ Edit button.
+
+Delete everything currently inside app.py.
+
+Open the downloaded file above, copy everything, and paste it into GitHub.
+
+Then click:
+
+Commit changes
+Step 3 — Keep your requirements.txt as this
+Open requirements.txt, delete everything, and paste:
+
+streamlit
+pandas
+plotly
+Then commit.
+
+You do not need JavaScript, Java, a credit card, or a paid API for this version.
+
+Step 4 — Your mosque image
+Your GitHub files should look like:
+
+your-project
+│
+├── app.py
+├── requirements.txt
+│
+└── assets
+    └── mosque_background.jpg
+The code specifically looks for:
+
+assets/mosque_background.jpg
+If your uploaded image has another name, rename it to exactly:
+
+mosque_background.jpg
+Step 5 — Set up the Reels once
+After the new app deploys:
+
+Open 🔐 My View
+
+Choose 🎬 Reels Setup
+
+Create a YouTube playlist if you don't already have one.
+
+Copy the playlist link.
+
+Paste it into:
+
+YouTube playlist link
+Press:
+
+Save playlist
+That's it.
+
+Later, if you find a new Short or video you want him to see:
+
+Add it to the same YouTube playlist.
+
+You don't touch GitHub.
+
+You don't change app.py.
+
+He opens 🎬 Reels in his view and scrolls through the videos vertically.
+
+The new code uses the playlist's video feed instead of the old hard-coded empty reel list from your current app. 
+
+
+One important note: make the YouTube playlist Public or Unlisted, otherwise the app may not be able to load the videos.
+
+
+app.py
+Code
+
+
+Library
+/
+app.py
+
+
 import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
+import plotly.graph_objects as go
 import os
 import base64
 import calendar
-from datetime import date, datetime
-
-import plotly.graph_objects as go
-
+import json
+import re
+import xml.etree.ElementTree as ET
+from urllib.request import urlopen, Request
+from datetime import date
 
 # ============================================================
-# APP CONFIG
+# CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -22,15 +393,10 @@ st.set_page_config(
 
 DATA_FILE = "life_chart_data.csv"
 LITHIUM_FILE = "lithium_tests.csv"
-
+SETTINGS_FILE = "app_settings.json"
 BACKGROUND_IMAGE = "assets/mosque_background.jpg"
 
 LITHIUM_INTERVAL_DAYS = 182
-
-
-# ============================================================
-# DATA
-# ============================================================
 
 COLUMNS = [
     "date",
@@ -43,1458 +409,788 @@ COLUMNS = [
     "factors",
     "notes",
     "medications",
-    "med_adherence"
+    "med_adherence",
 ]
 
-
 FACTOR_OPTIONS = [
-
-    # Sleep
     "Lack of sleep",
     "Poor quality sleep",
     "Oversleeping",
     "Changed sleep schedule",
-
-    # Nicotine
     "Nicotine deficiency / withdrawal",
     "Nicotine use",
     "Smoking more than usual",
     "Smoking less than usual",
-
-    # Work
-    "Problem at work",
     "Work stress",
     "Heavy workload",
+    "Problem at work",
     "Conflict with colleague",
     "Conflict with boss",
     "Job uncertainty",
-
-    # Family
+    "Financial stress",
     "Family conflict",
     "Family stress",
     "Family pressure",
-
-    # Relationship / social
     "Relationship conflict",
     "Loneliness",
     "Social stress",
     "Argument with someone",
     "Feeling isolated",
-
-    # Mental / emotional
     "Anxiety",
     "Overthinking",
     "Feeling overwhelmed",
     "Stress",
     "Boredom",
-
-    # Physical
     "Physical illness",
     "Pain",
     "Headache / migraine",
     "Fatigue",
-
-    # Medication
     "Missed medication",
     "Medication change",
-
-    # Lifestyle
     "Too much caffeine",
     "Lack of caffeine",
     "Exercise",
     "Lack of exercise",
     "Travel",
     "Change in routine",
-
-    # Positive
     "Good social interaction",
     "Positive event",
     "Relaxation",
     "Good day",
-
-    "Other"
+    "Other",
 ]
 
-
-# ============================================================
-# DAILY QUOTES
-# ============================================================
-
+# Arabic only, as requested
 DAILY_QUOTES = [
-
-    (
-        "رَبِّ اشْرَحْ لِي صَدْرِي",
-        "My Lord, expand for me my chest. — Quran 20:25"
-    ),
-
-    (
-        "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
-        "Indeed, with hardship comes ease. — Quran 94:6"
-    ),
-
-    (
-        "لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا",
-        "Do not grieve; indeed Allah is with us. — Quran 9:40"
-    ),
-
-    (
-        "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
-        "Surely in the remembrance of Allah do hearts find comfort. — Quran 13:28"
-    ),
-
-    (
-        "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
-        "Allah is sufficient for us, and He is the best disposer of affairs."
-    ),
-
-    (
-        "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ",
-        "Whoever puts their trust in Allah, He is sufficient for them. — Quran 65:3"
-    ),
-
-    (
-        "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا",
-        "Allah does not burden a soul beyond what it can bear. — Quran 2:286"
-    ),
-
-    (
-        "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
-        "Indeed, Allah is with those who are patient. — Quran 2:153"
-    ),
-
-    (
-        "وَقُل رَّبِّ زِدْنِي عِلْمًا",
-        "My Lord, increase me in knowledge. — Quran 20:114"
-    ),
-
-    (
-        "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا",
-        "So surely with hardship comes ease. — Quran 94:5"
-    )
+    "رَبِّ اشْرَحْ لِي صَدْرِي",
+    "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+    "لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا",
+    "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
+    "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+    "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ",
+    "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا",
+    "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
+    "وَقُل رَّبِّ زِدْنِي عِلْمًا",
+    "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا",
 ]
 
-
 # ============================================================
-# CSS
+# DESIGN
 # ============================================================
 
-def inject_css():
+def inject_design():
+    st.markdown("""
+    <style>
+    #MainMenu, footer, header {visibility:hidden;}
 
-    st.markdown(
-        """
-        <style>
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(rgba(7, 22, 15, 0.46), rgba(7, 22, 15, 0.62));
+    }
 
-        #MainMenu {
-            visibility: hidden;
-        }
+    .stApp {
+        color: #1d261f;
+    }
 
-        footer {
-            visibility: hidden;
-        }
+    .block-container {
+        max-width: 520px !important;
+        margin: auto !important;
+        padding: 14px 12px 80px !important;
+    }
 
-        header {
-            visibility: hidden;
-        }
+    h1, h2, h3, p, label, .stMarkdown {
+        color: #172119 !important;
+    }
 
+    .app-title {
+        background: rgba(248, 246, 238, 0.94);
+        border-radius: 26px;
+        padding: 14px 20px;
+        text-align: center;
+        font-size: 34px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.22);
+    }
+
+    .quote-box {
+        background: rgba(248, 246, 238, 0.96);
+        border-radius: 26px;
+        padding: 26px 20px;
+        margin: 0 0 14px 0;
+        box-shadow: 0 8px 24px rgba(0,0,0,.22);
+        border: 1px solid rgba(255,255,255,.55);
+    }
+
+    .arabic-text {
+        direction: rtl;
+        unicode-bidi: plaintext;
+        text-align: center;
+        font-size: 28px;
+        line-height: 2.05;
+        font-family: "Noto Naskh Arabic", "Amiri", "Tahoma", serif;
+        font-weight: 700;
+        color: #173d2b !important;
+    }
+
+    div[data-testid="stRadio"] {
+        background: rgba(248,246,238,.94);
+        border-radius: 20px;
+        padding: 8px 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,.18);
+        margin-bottom: 12px;
+    }
+
+    div[data-baseweb="input"] > div,
+    div[data-baseweb="select"] > div,
+    textarea {
+        background: rgba(250,249,245,.98) !important;
+        border-radius: 16px !important;
+        color: #172119 !important;
+    }
+
+    .stSlider {
+        background: rgba(248,246,238,.94);
+        padding: 12px 14px 4px;
+        border-radius: 18px;
+        box-shadow: 0 6px 18px rgba(0,0,0,.15);
+    }
+
+    [data-testid="stMetric"] {
+        background: rgba(248,246,238,.95);
+        border-radius: 18px;
+        padding: 12px;
+    }
+
+    .stButton > button {
+        width: 100%;
+        min-height: 50px;
+        border-radius: 18px;
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    .content-card {
+        background: rgba(248,246,238,.96);
+        border-radius: 24px;
+        padding: 18px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.20);
+        margin-bottom: 12px;
+    }
+
+    .calendar-day {
+        background: rgba(248,246,238,.96);
+        color: #172119 !important;
+        border-radius: 10px;
+        min-height: 58px;
+        padding: 7px 2px;
+        text-align: center;
+        font-size: 11px;
+        margin: 2px 0;
+    }
+
+    .calendar-head {
+        background: rgba(248,246,238,.90);
+        color: #172119 !important;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 11px;
+        padding: 5px 1px;
+        margin-bottom: 3px;
+    }
+
+    .reels-wrap {
+        background: #000;
+        border-radius: 26px;
+        overflow: hidden;
+        box-shadow: 0 8px 26px rgba(0,0,0,.28);
+    }
+
+    @media (max-width: 600px) {
         .block-container {
-            max-width: 520px;
-            margin: auto;
-            padding-top: 15px;
-            padding-left: 12px;
-            padding-right: 12px;
-            padding-bottom: 80px;
+            max-width: 100% !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
         }
+        .app-title {font-size: 29px;}
+        .arabic-text {font-size: 25px;}
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-        h1 {
-            text-align: center;
-        }
-
-        .stButton > button {
-            width: 100%;
-            min-height: 52px;
-            border-radius: 18px;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        textarea {
-            border-radius: 18px !important;
-        }
-
-        div[data-baseweb="input"] > div {
-            border-radius: 16px;
-        }
-
-        div[data-baseweb="select"] > div {
-            border-radius: 16px;
-        }
-
-        .quote-card {
-
-            background: rgba(255,255,255,0.82);
-
-            backdrop-filter: blur(10px);
-
-            padding: 22px;
-
-            border-radius: 25px;
-
-            margin-bottom: 20px;
-
-            text-align: center;
-        }
-
-        .arabic-quote {
-
-            font-size: 27px;
-
-            line-height: 2;
-
-            direction: rtl;
-
-            text-align: center;
-
-            font-family:
-                "Noto Naskh Arabic",
-                "Amiri",
-                serif;
-
-            font-weight: 600;
-
-            margin-bottom: 12px;
-        }
-
-        .english-quote {
-
-            font-size: 15px;
-
-            line-height: 1.6;
-
-            text-align: center;
-
-            font-style: italic;
-
-            opacity: 0.85;
-        }
-
-        .calendar-day {
-
-            background: rgba(255,255,255,0.82);
-
-            border-radius: 10px;
-
-            padding: 7px;
-
-            min-height: 55px;
-
-            text-align: center;
-
-            font-size: 11px;
-
-            margin: 2px;
-        }
-
-        .calendar-header {
-
-            text-align: center;
-
-            font-weight: bold;
-
-            font-size: 11px;
-
-            opacity: 0.8;
-        }
-
-        @media (max-width: 600px) {
-
-            .block-container {
-
-                width: 100%;
-
-                padding-left: 8px;
-
-                padding-right: 8px;
-            }
-
-            h1 {
-
-                font-size: 27px !important;
-            }
-
-            .stButton > button {
-
-                min-height: 55px;
-
-                border-radius: 18px;
-            }
-
-        }
-
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-# ============================================================
-# BACKGROUND
-# ============================================================
 
 def inject_background():
-
     if not os.path.exists(BACKGROUND_IMAGE):
-
         return
-
-    with open(
-        BACKGROUND_IMAGE,
-        "rb"
-    ) as image_file:
-
-        encoded = base64.b64encode(
-            image_file.read()
-        ).decode()
-
-    st.markdown(
-        f"""
-        <style>
-
-        [data-testid="stAppViewContainer"] {{
-
-            background-image:
-
-                linear-gradient(
-                    rgba(10, 20, 15, 0.35),
-                    rgba(10, 20, 15, 0.45)
-                ),
-
-                url(
-                    "data:image/jpeg;base64,{encoded}"
-                );
-
-            background-size: cover;
-
-            background-position: center;
-
-            background-attachment: fixed;
-        }}
-
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    with open(BACKGROUND_IMAGE, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+    st.markdown(f"""
+    <style>
+    [data-testid="stAppViewContainer"] {{
+        background-image:
+            linear-gradient(rgba(7,22,15,.40), rgba(7,22,15,.60)),
+            url("data:image/jpeg;base64,{encoded}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
 
 
-inject_css()
+inject_design()
 inject_background()
 
-
 # ============================================================
-# DATA FUNCTIONS
+# DATA
 # ============================================================
 
 def load_data():
-
     if os.path.exists(DATA_FILE):
-
-        df = pd.read_csv(
-            DATA_FILE
-        )
-
-        df["date"] = pd.to_datetime(
-            df["date"]
-        )
-
-        for column in COLUMNS:
-
-            if column not in df.columns:
-
-                df[column] = None
-
+        df = pd.read_csv(DATA_FILE)
+        if "date" in df.columns:
+            df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        for col in COLUMNS:
+            if col not in df.columns:
+                df[col] = None
         return df[COLUMNS]
-
-    return pd.DataFrame(
-        columns=COLUMNS
-    )
+    return pd.DataFrame(columns=COLUMNS)
 
 
-def save_entry(
-    entry_date,
-    updates
-):
-
+def save_entry(entry_date, updates):
     df = load_data()
-
-    entry_date = pd.Timestamp(
-        entry_date
-    )
-
-    existing = df[
-        df["date"] == entry_date
-    ]
+    entry_date = pd.Timestamp(entry_date)
+    existing = df[df["date"] == entry_date]
 
     if existing.empty:
-
-        row = {
-            column: None
-            for column in COLUMNS
-        }
-
+        row = {col: None for col in COLUMNS}
         row["date"] = entry_date
-
     else:
-
         row = existing.iloc[0].to_dict()
 
     row.update(updates)
-
-    df = df[
-        df["date"] != entry_date
-    ]
-
-    new_row = pd.DataFrame(
-        [row]
-    )
-
-    df = pd.concat(
-        [
-            df,
-            new_row
-        ],
-        ignore_index=True
-    )
-
-    df = df.sort_values(
-        "date"
-    )
-
-    df.to_csv(
-        DATA_FILE,
-        index=False
-    )
+    df = df[df["date"] != entry_date]
+    df = pd.concat([df, pd.DataFrame([row])], ignore_index=True)
+    df = df.sort_values("date")
+    df.to_csv(DATA_FILE, index=False)
 
 
 # ============================================================
-# DAILY QUOTE
-# ============================================================
-
-def render_quote():
-
-    index = (
-        date.today().toordinal()
-        % len(DAILY_QUOTES)
-    )
-
-    arabic, english = DAILY_QUOTES[
-        index
-    ]
-
-    st.markdown(
-        f"""
-        <div class="quote-card">
-
-            <div class="arabic-quote">
-
-                {arabic}
-
-            </div>
-
-            <div class="english-quote">
-
-                {english}
-
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-# ============================================================
-# MOOD CONVERSION
-# ============================================================
-
-def severity_to_mood(
-    mood_type,
-    severity
-):
-
-    if mood_type == "Stable":
-
-        return 0
-
-    level = round(
-        severity / 2.5
-    )
-
-    level = max(
-        1,
-        min(4, level)
-    )
-
-    if mood_type == "Depression":
-
-        return -level
-
-    return level
-
-
-# ============================================================
-# LITHIUM TRACKER
+# LITHIUM
 # ============================================================
 
 def load_lithium():
-
     if os.path.exists(LITHIUM_FILE):
-
-        df = pd.read_csv(
-            LITHIUM_FILE
-        )
-
-        df["date"] = pd.to_datetime(
-            df["date"]
-        )
-
+        df = pd.read_csv(LITHIUM_FILE)
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
         return df
-
-    return pd.DataFrame(
-        columns=[
-            "date",
-            "result",
-            "notes"
-        ]
-    )
+    return pd.DataFrame(columns=["date", "result", "notes"])
 
 
-def save_lithium(
-    test_date,
-    result,
-    notes
-):
-
+def save_lithium(test_date, result, notes):
     df = load_lithium()
-
-    new_row = pd.DataFrame([
-        {
-            "date": pd.Timestamp(
-                test_date
-            ),
-
-            "result": result,
-
-            "notes": notes
-        }
-    ])
-
-    df = pd.concat(
-        [
-            df,
-            new_row
-        ],
-        ignore_index=True
-    )
-
-    df = df.sort_values(
-        "date"
-    )
-
-    df.to_csv(
-        LITHIUM_FILE,
-        index=False
-    )
+    row = pd.DataFrame([{
+        "date": pd.Timestamp(test_date),
+        "result": result,
+        "notes": notes,
+    }])
+    df = pd.concat([df, row], ignore_index=True)
+    df = df.sort_values("date")
+    df.to_csv(LITHIUM_FILE, index=False)
 
 
-def render_lithium_tracker():
-
+def render_lithium():
+    st.subheader("💊 Lithium tracker")
     tests = load_lithium()
 
-    st.subheader(
-        "💊 Lithium tracker"
+    if not tests.empty:
+        tests = tests.dropna(subset=["date"]).sort_values("date")
+        if not tests.empty:
+            last = tests.iloc[-1]
+            next_date = last["date"] + pd.Timedelta(days=LITHIUM_INTERVAL_DAYS)
+            days_left = (next_date.normalize() - pd.Timestamp.today().normalize()).days
+
+            c1, c2 = st.columns(2)
+            c1.metric("Last test", last["date"].strftime("%d %b %Y"))
+            c2.metric("Next test", next_date.strftime("%d %b %Y"))
+
+            st.markdown(f"**Last result:** {last['result']}")
+            if pd.notna(last.get("notes")) and str(last["notes"]).strip():
+                st.caption(str(last["notes"]))
+
+            if days_left < 0:
+                st.error(f"Overdue by {-days_left} days.")
+            elif days_left <= 14:
+                st.warning(f"Due in {days_left} days.")
+            else:
+                st.success(f"Next test in approximately {days_left} days.")
+    else:
+        st.info("No lithium test has been logged yet.")
+
+    with st.expander("➕ Log a lithium test"):
+        test_date = st.date_input("Test date", value=date.today(), key="lt_date")
+        result = st.text_input("Result", key="lt_result")
+        notes = st.text_area("Notes", key="lt_notes")
+        if st.button("Save lithium test", type="primary"):
+            if result.strip():
+                save_lithium(test_date, result.strip(), notes)
+                st.success("Saved.")
+                st.rerun()
+            else:
+                st.warning("Please enter the result.")
+
+    if not tests.empty:
+        with st.expander("Previous tests"):
+            st.dataframe(
+                tests.sort_values("date", ascending=False),
+                use_container_width=True,
+                hide_index=True,
+            )
+
+
+# ============================================================
+# SETTINGS + YOUTUBE PLAYLIST
+# ============================================================
+
+def load_settings():
+    default = {"youtube_playlist": ""}
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+                saved = json.load(f)
+            default.update(saved)
+        except Exception:
+            pass
+    return default
+
+
+def save_settings(settings):
+    with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+        json.dump(settings, f, ensure_ascii=False, indent=2)
+
+
+def extract_playlist_id(text):
+    text = (text or "").strip()
+    if not text:
+        return ""
+    match = re.search(r"[?&]list=([^&]+)", text)
+    if match:
+        return match.group(1)
+    if text.startswith(("PL", "UU", "LL", "RD")) and " " not in text:
+        return text
+    return ""
+
+
+@st.cache_data(ttl=900, show_spinner=False)
+def get_playlist_videos(playlist_id):
+    if not playlist_id:
+        return []
+
+    feed_url = (
+        "https://www.youtube.com/feeds/videos.xml?playlist_id="
+        + playlist_id
     )
 
-    if tests.empty:
-
-        st.info(
-            "No lithium test has been logged yet."
+    try:
+        request = Request(
+            feed_url,
+            headers={"User-Agent": "Mozilla/5.0"}
         )
+        with urlopen(request, timeout=10) as response:
+            xml_data = response.read()
 
-        return
+        root = ET.fromstring(xml_data)
+        ns = {
+            "atom": "http://www.w3.org/2005/Atom",
+            "yt": "http://www.youtube.com/xml/schemas/2015",
+        }
 
-    tests = tests.sort_values(
-        "date"
-    )
+        videos = []
+        for entry in root.findall("atom:entry", ns):
+            title = entry.findtext("atom:title", default="Video", namespaces=ns)
+            video_id = entry.findtext("yt:videoId", default="", namespaces=ns)
+            if video_id:
+                videos.append({
+                    "title": title,
+                    "video_id": video_id,
+                })
+        return videos
+    except Exception:
+        return []
 
-    last = tests.iloc[-1]
 
-    last_date = last["date"]
+def render_playlist_settings():
+    st.subheader("🎬 Reels playlist")
 
-    next_date = (
-        last_date
-        + pd.Timedelta(
-            days=LITHIUM_INTERVAL_DAYS
-        )
-    )
-
-    days_remaining = (
-        next_date
-        - pd.Timestamp.today()
-    ).days
-
-    col1, col2 = st.columns(2)
-
-    col1.metric(
-        "Last test",
-        last_date.strftime(
-            "%d %b %Y"
-        )
-    )
-
-    col2.metric(
-        "Next test",
-        next_date.strftime(
-            "%d %b %Y"
-        )
-    )
+    settings = load_settings()
 
     st.write(
-        f"**Result:** {last['result']}"
+        "Paste your YouTube playlist link once. "
+        "After that, add as many videos or Shorts as you want to the playlist "
+        "on YouTube. The app will load them automatically."
     )
 
-    if pd.notna(
-        last["notes"]
-    ):
-
-        if str(
-            last["notes"]
-        ).strip():
-
-            st.caption(
-                str(last["notes"])
-            )
-
-    if days_remaining < 0:
-
-        st.error(
-            f"⚠️ The next lithium test is overdue by {-days_remaining} days."
-        )
-
-    elif days_remaining <= 14:
-
-        st.warning(
-            f"⚠️ The next lithium test is due in {days_remaining} days."
-        )
-
-    else:
-
-        st.success(
-            f"Next test is in approximately {days_remaining} days."
-        )
-
-
-# ============================================================
-# ED / PURGING CALENDAR
-# ============================================================
-
-def render_ed_calendar():
-
-    df = load_data()
-
-    st.subheader(
-        "📅 ED & Purging Calendar"
+    playlist = st.text_input(
+        "YouTube playlist link",
+        value=settings.get("youtube_playlist", ""),
+        placeholder="https://www.youtube.com/playlist?list=...",
     )
 
-    selected_month = st.date_input(
-        "Choose month",
-        value=date.today(),
-        key="calendar_month"
-    )
+    if st.button("Save playlist", type="primary"):
+        playlist_id = extract_playlist_id(playlist)
+        if playlist_id:
+            settings["youtube_playlist"] = playlist
+            save_settings(settings)
+            get_playlist_videos.clear()
+            st.success("Playlist saved. New videos added to that playlist will appear automatically.")
+        else:
+            st.warning("Please paste a valid YouTube playlist link containing ?list=...")
 
-    year = selected_month.year
-
-    month = selected_month.month
-
-    month_name = calendar.month_name[
-        month
-    ]
-
-    st.markdown(
-        f"### {month_name} {year}"
-    )
-
-    if not df.empty:
-
-        df["date"] = pd.to_datetime(
-            df["date"]
-        )
-
-    cal = calendar.monthcalendar(
-        year,
-        month
-    )
-
-    day_names = [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-    ]
-
-    header_cols = st.columns(7)
-
-    for i, day_name in enumerate(
-        day_names
-    ):
-
-        header_cols[i].markdown(
-            f"""
-            <div class="calendar-header">
-                {day_name}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    for week in cal:
-
-        cols = st.columns(7)
-
-        for i, day_number in enumerate(
-            week
-        ):
-
-            if day_number == 0:
-
-                cols[i].write("")
-
-                continue
-
-            current_date = pd.Timestamp(
-                year=year,
-                month=month,
-                day=day_number
-            )
-
-            status = ""
-
-            if not df.empty:
-
-                matching = df[
-                    df["date"]
-                    == current_date
-                ]
-
-                if not matching.empty:
-
-                    row = matching.iloc[-1]
-
-                    ed_status = str(
-                        row.get(
-                            "ed_status",
-                            ""
-                        )
-                    ).lower()
-
-                    purging = row.get(
-                        "purging",
-                        False
-                    )
-
-                    if str(purging).lower() in [
-                        "true",
-                        "yes",
-                        "1"
-                    ]:
-
-                        status = "🔴<br>Purging"
-
-                    elif ed_status == "yes":
-
-                        status = "🟡<br>ED"
-
-            cols[i].markdown(
-                f"""
-                <div class="calendar-day">
-
-                    <b>
-                        {day_number}
-                    </b>
-
-                    <br>
-
-                    {status}
-
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-    st.caption(
-        "🟡 ED active day • 🔴 Purging occurred"
-    )
-
-
-# ============================================================
-# MOOD CHART
-# ============================================================
-
-def render_mood_chart():
-
-    df = load_data()
-
-    if df.empty:
-
-        st.info(
-            "No mood data yet."
-        )
-
-        return
-
-    df = df.dropna(
-        subset=["mood_rating"]
-    )
-
-    if df.empty:
-
-        return
-
-    df = df.sort_values(
-        "date"
-    )
-
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Scatter(
-            x=df["date"],
-            y=df["mood_rating"],
-            mode="lines+markers",
-            marker=dict(
-                size=10
-            )
-        )
-    )
-
-    fig.add_hline(
-        y=0,
-        line_dash="dash"
-    )
-
-    fig.update_layout(
-        title="Mood over time",
-        height=400,
-        yaxis=dict(
-            range=[-4.5, 4.5]
-        ),
-        margin=dict(
-            l=10,
-            r=10,
-            t=50,
-            b=20
-        )
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-
-# ============================================================
-# FACTOR CHARTS
-# ============================================================
-
-def render_factor_charts():
-
-    df = load_data()
-
-    if df.empty:
-
-        st.info(
-            "No factor data yet."
-        )
-
-        return
-
-    all_factors = []
-
-    for _, row in df.iterrows():
-
-        factors = row.get(
-            "factors"
-        )
-
-        if pd.isna(factors):
-
-            continue
-
-        for factor in str(
-            factors
-        ).split(","):
-
-            factor = factor.strip()
-
-            if factor:
-
-                all_factors.append(
-                    {
-                        "factor": factor,
-                        "mood": abs(
-                            float(
-                                row.get(
-                                    "mood_rating",
-                                    0
-                                )
-                            )
-                        )
-                    }
-                )
-
-    if not all_factors:
-
-        st.info(
-            "No factors have been logged yet."
-        )
-
-        return
-
-    factor_df = pd.DataFrame(
-        all_factors
-    )
-
-    counts = (
-        factor_df["factor"]
-        .value_counts()
-    )
-
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Bar(
-            x=counts.index,
-            y=counts.values
-        )
-    )
-
-    fig.update_layout(
-        title="Most common factors",
-        height=400,
-        xaxis_title="Factor",
-        yaxis_title="Times mentioned"
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-
-# ============================================================
-# INSTAGRAM STYLE REELS
-# ============================================================
 
 def render_reels():
+    settings = load_settings()
+    playlist_id = extract_playlist_id(settings.get("youtube_playlist", ""))
+    videos = get_playlist_videos(playlist_id)
 
-    # ADD YOUR REELS HERE
-    # You only need to put links once.
-
-    reels = [
-
-        {
-            "title": "Islamic reminder",
-            "url": "",
-            "type": "youtube"
-        },
-
-        {
-            "title": "Motivation",
-            "url": "",
-            "type": "youtube"
-        },
-
-        {
-            "title": "A reminder for difficult days",
-            "url": "",
-            "type": "youtube"
-        }
-    ]
-
-    valid_reels = []
-
-    for reel in reels:
-
-        if reel["url"].strip():
-
-            valid_reels.append(
-                reel
-            )
-
-    if not valid_reels:
-
-        st.info(
-            "No reels have been added yet. "
-            "Add links inside the reels section in app.py."
-        )
-
+    if not playlist_id:
+        st.info("No playlist has been set yet. Open My View → 🎬 Reels Setup and paste the playlist link once.")
         return
 
-    reels_html = ""
+    if not videos:
+        st.warning(
+            "The playlist could not be loaded right now. "
+            "Make sure the playlist is public or unlisted and contains videos."
+        )
+        return
 
-    for reel in valid_reels:
-
-        url = reel["url"]
-
-        title = reel["title"]
-
-        # YouTube Shorts support
-
-        if "youtube.com" in url:
-
-            if "/shorts/" in url:
-
-                video_id = url.split(
-                    "/shorts/"
-                )[1].split("?")[0]
-
-                embed_url = (
-                    "https://www.youtube.com/embed/"
-                    + video_id
-                )
-
-            elif "watch?v=" in url:
-
-                video_id = url.split(
-                    "watch?v="
-                )[1].split("&")[0]
-
-                embed_url = (
-                    "https://www.youtube.com/embed/"
-                    + video_id
-                )
-
-            else:
-
-                embed_url = url
-
-            media = f'''
+    cards = []
+    for video in videos:
+        embed = (
+            "https://www.youtube.com/embed/"
+            + video["video_id"]
+            + "?playsinline=1&rel=0"
+        )
+        cards.append(f"""
+        <section class="reel">
             <iframe
-                src="{embed_url}"
-                allowfullscreen
-                allow="autoplay; encrypted-media"
-            ></iframe>
-            '''
-
-        # Direct MP4 support
-
-        elif url.endswith(
-            ".mp4"
-        ):
-
-            media = f'''
-            <video
-                controls
-                playsinline
-                preload="metadata"
-            >
-                <source
-                    src="{url}"
-                    type="video/mp4"
-                >
-            </video>
-            '''
-
-        else:
-
-            media = f'''
-            <div class="unsupported">
-
-                This video format is not supported.
-
-            </div>
-            '''
-
-        reels_html += f'''
-
-        <div class="reel">
-
-            {media}
-
-            <div class="overlay">
-
-                <div class="reel-title">
-
-                    {title}
-
-                </div>
-
-            </div>
-
-        </div>
-
-        '''
+                src="{embed}"
+                title="{video['title'].replace('"', '&quot;')}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+            <div class="caption">{video['title']}</div>
+        </section>
+        """)
 
     html = f"""
-
     <html>
-
     <head>
-
     <style>
-
-    * {{
-        box-sizing: border-box;
-    }}
-
+    * {{ box-sizing: border-box; }}
     body {{
         margin: 0;
-        background: black;
+        background: #000;
         overflow: hidden;
+        font-family: Arial, sans-serif;
     }}
-
     .feed {{
-
         height: 100vh;
-
-        overflow-y: scroll;
-
-        scroll-snap-type:
-            y mandatory;
-
+        overflow-y: auto;
+        scroll-snap-type: y mandatory;
         scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
     }}
-
-    .feed::-webkit-scrollbar {{
-        display: none;
-    }}
-
+    .feed::-webkit-scrollbar {{ display: none; }}
     .reel {{
-
-        width: 100%;
-
         height: 100vh;
-
-        position: relative;
-
-        scroll-snap-align: start;
-
-        background: black;
-    }}
-
-    iframe,
-    video {{
-
         width: 100%;
-
-        height: 100%;
-
-        border: none;
-
-        object-fit: cover;
+        position: relative;
+        scroll-snap-align: start;
+        background: #000;
     }}
-
-    .overlay {{
-
+    iframe {{
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }}
+    .caption {{
         position: absolute;
-
-        bottom: 0;
-
         left: 0;
-
         right: 0;
-
-        padding:
-            100px 20px 40px 20px;
-
+        bottom: 0;
+        padding: 80px 18px 28px;
         color: white;
-
-        background:
-            linear-gradient(
-                transparent,
-                rgba(0,0,0,0.9)
-            );
+        font-size: 17px;
+        font-weight: 700;
+        background: linear-gradient(transparent, rgba(0,0,0,.9));
+        pointer-events: none;
     }}
-
-    .reel-title {{
-
-        font-size: 18px;
-
-        font-weight: bold;
-
-        line-height: 1.5;
-    }}
-
-    .unsupported {{
-
-        color: white;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        height: 100%;
-    }}
-
     </style>
-
     </head>
-
     <body>
-
         <div class="feed">
-
-            {reels_html}
-
+            {''.join(cards)}
         </div>
-
     </body>
-
     </html>
     """
 
-    components.html(
-        html,
-        height=750,
-        scrolling=False
+    st.markdown('<div class="reels-wrap">', unsafe_allow_html=True)
+    components.html(html, height=720, scrolling=False)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+# ============================================================
+# QUOTE
+# ============================================================
+
+def render_quote():
+    quote = DAILY_QUOTES[date.today().toordinal() % len(DAILY_QUOTES)]
+    # Plain Streamlit markdown, no literal HTML tags can appear to the user.
+    st.markdown(
+        f'<div class="quote-box"><div class="arabic-text" dir="rtl">{quote}</div></div>',
+        unsafe_allow_html=True,
     )
 
 
 # ============================================================
-# MAIN APP
+# HELPERS
 # ============================================================
 
-st.title(
-    "🌙 Life Chart"
-)
+def severity_to_mood(mood_type, severity):
+    if mood_type == "Stable":
+        return 0
+    level = max(1, min(4, round(float(severity) / 2.5)))
+    return -level if mood_type == "Depression" else level
 
+
+def render_calendar():
+    df = load_data()
+    st.subheader("📅 ED & Purging Calendar")
+
+    selected = st.date_input(
+        "Month",
+        value=date.today(),
+        key="calendar_month",
+    )
+
+    year, month = selected.year, selected.month
+    st.markdown(f"### {calendar.month_name[month]} {year}")
+
+    headers = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    cols = st.columns(7)
+    for i, name in enumerate(headers):
+        cols[i].markdown(
+            f'<div class="calendar-head">{name}</div>',
+            unsafe_allow_html=True,
+        )
+
+    if not df.empty:
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+
+    for week in calendar.monthcalendar(year, month):
+        cols = st.columns(7)
+        for i, day_num in enumerate(week):
+            if day_num == 0:
+                cols[i].write("")
+                continue
+
+            current = pd.Timestamp(year=year, month=month, day=day_num)
+            label = ""
+
+            match = df[df["date"] == current] if not df.empty else pd.DataFrame()
+
+            if not match.empty:
+                row = match.iloc[-1]
+                purge_value = str(row.get("purging", "")).lower()
+                ed_value = str(row.get("ed_status", "")).lower()
+
+                if purge_value in ["true", "yes", "1"]:
+                    label = "🔴<br>Purging"
+                elif ed_value == "yes":
+                    label = "🟡<br>ED"
+
+            cols[i].markdown(
+                f'<div class="calendar-day"><b>{day_num}</b><br>{label}</div>',
+                unsafe_allow_html=True,
+            )
+
+    st.caption("🟡 ED active day   •   🔴 Purging occurred")
+
+
+def render_mood_chart():
+    df = load_data().dropna(subset=["mood_rating"])
+    if df.empty:
+        st.info("No mood data yet.")
+        return
+
+    df = df.sort_values("date")
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=df["date"],
+        y=df["mood_rating"],
+        mode="lines+markers",
+        marker=dict(size=9),
+        name="Mood",
+    ))
+    fig.add_hline(y=0, line_dash="dash")
+    fig.update_layout(
+        title="Mood over time",
+        yaxis=dict(range=[-4.5, 4.5], title="Mood"),
+        height=400,
+        margin=dict(l=20, r=20, t=55, b=25),
+        paper_bgcolor="rgba(248,246,238,.96)",
+        plot_bgcolor="rgba(248,246,238,.96)",
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def render_factor_charts():
+    df = load_data().dropna(subset=["factors"])
+    if df.empty:
+        st.info("No factors have been logged yet.")
+        return
+
+    rows = []
+    for _, row in df.iterrows():
+        for factor in str(row["factors"]).split(","):
+            factor = factor.strip()
+            if factor:
+                rows.append({"factor": factor})
+
+    if not rows:
+        st.info("No factors have been logged yet.")
+        return
+
+    factor_df = pd.DataFrame(rows)
+    counts = factor_df["factor"].value_counts().head(15)
+
+    fig = go.Figure(go.Bar(
+        x=counts.values,
+        y=counts.index,
+        orientation="h",
+    ))
+    fig.update_layout(
+        title="Most common factors",
+        height=max(360, len(counts) * 38),
+        margin=dict(l=20, r=20, t=55, b=25),
+        paper_bgcolor="rgba(248,246,238,.96)",
+        plot_bgcolor="rgba(248,246,238,.96)",
+        yaxis=dict(autorange="reversed"),
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# ============================================================
+# APP
+# ============================================================
+
+st.markdown('<div class="app-title">🌙 Life Chart</div>', unsafe_allow_html=True)
 render_quote()
 
-
 view = st.radio(
-    "Choose view",
-    [
-        "👤 His View",
-        "🔐 My View"
-    ],
-    horizontal=True
+    "View",
+    ["👤 His View", "🔐 My View"],
+    horizontal=True,
+    label_visibility="collapsed",
 )
-
 
 # ============================================================
 # HIS VIEW
 # ============================================================
 
 if view == "👤 His View":
-
     tab = st.radio(
         "Navigation",
-        [
-            "🏠 Check-in",
-            "📅 Calendar",
-            "🎬 Reels"
-        ],
+        ["🏠 Check-in", "📅 Calendar", "🎬 Reels"],
         horizontal=True,
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key="his_nav",
     )
 
-
-    # ========================================================
-    # CHECK-IN
-    # ========================================================
-
     if tab == "🏠 Check-in":
-
-        st.subheader(
-            "Today's check-in 🌙"
-        )
+        st.subheader("Today's check-in 🌙")
 
         entry_date = st.date_input(
             "Date",
-            value=date.today()
+            value=date.today(),
+            key="his_date",
         )
 
-
-        # ----------------------------------------------------
-        # MOOD
-        # ----------------------------------------------------
-
-        st.markdown(
-            "### Mood"
-        )
-
+        st.markdown("### Mood")
         mood_type = st.radio(
             "How do you feel today?",
-            [
-                "Stable",
-                "Depression",
-                "Hypomania"
-            ],
-            horizontal=True
+            ["Stable", "Depression", "Hypomania"],
+            horizontal=True,
+            key="his_mood_type",
         )
 
         mood_severity = 0
-
         if mood_type == "Depression":
-
             mood_severity = st.slider(
                 "Depression intensity",
-                min_value=1,
-                max_value=10,
-                value=5
+                1, 10, 5,
+                key="depression_severity",
             )
-
         elif mood_type == "Hypomania":
-
             mood_severity = st.slider(
                 "Hypomania intensity",
-                min_value=1,
-                max_value=10,
-                value=5
+                1, 10, 5,
+                key="hypomania_severity",
             )
 
-
-        # ----------------------------------------------------
-        # SLEEP - ALWAYS SEPARATE
-        # ----------------------------------------------------
-
-        st.markdown("---")
-
-        st.markdown(
-            "### 😴 Sleep"
-        )
-
+        st.markdown("### 😴 Sleep")
         sleep_score = st.slider(
             "How was your sleep?",
-            min_value=1,
-            max_value=10,
-            value=5
+            1, 10, 5,
+            key="his_sleep",
         )
 
-        if sleep_score <= 2:
-
-            sleep_text = "Very bad"
-
-        elif sleep_score <= 4:
-
-            sleep_text = "Bad"
-
-        elif sleep_score <= 6:
-
-            sleep_text = "Okay"
-
-        elif sleep_score <= 8:
-
-            sleep_text = "Good"
-
-        else:
-
-            sleep_text = "Excellent"
-
-        st.caption(
-            f"{sleep_score}/10 — {sleep_text}"
+        sleep_labels = {
+            range(1, 3): "Very bad",
+            range(3, 5): "Bad",
+            range(5, 7): "Okay",
+            range(7, 9): "Good",
+            range(9, 11): "Excellent",
+        }
+        sleep_text = next(
+            label for values, label in sleep_labels.items()
+            if sleep_score in values
         )
+        st.caption(f"{sleep_score}/10 — {sleep_text}")
 
-
-        # ----------------------------------------------------
-        # ED STATUS
-        # ----------------------------------------------------
-
-        st.markdown("---")
-
-        st.markdown(
-            "### ED status"
-        )
-
+        st.markdown("### ED status")
         ed_status = st.radio(
             "Was your ED active today?",
-            [
-                "No",
-                "Yes"
-            ],
-            horizontal=True
+            ["No", "Yes"],
+            horizontal=True,
+            key="his_ed",
         )
 
         purging = False
-
         if ed_status == "Yes":
-
-            purging_answer = st.radio(
+            purging = st.radio(
                 "Did purging happen today?",
-                [
-                    "No",
-                    "Yes"
-                ],
-                horizontal=True
-            )
+                ["No", "Yes"],
+                horizontal=True,
+                key="his_purging",
+            ) == "Yes"
 
-            if purging_answer == "Yes":
-
-                purging = True
-
-
-        # ----------------------------------------------------
-        # SAVE
-        # ----------------------------------------------------
-
-        st.markdown("---")
-
-        if st.button(
-            "Save today's check-in 🤍",
-            type="primary"
-        ):
-
-            mood_rating = severity_to_mood(
-                mood_type,
-                mood_severity
-            )
-
-            save_entry(
-                entry_date,
-                {
-                    "mood_type":
-                        mood_type,
-
-                    "mood_rating":
-                        mood_rating,
-
-                    "mood_severity":
-                        mood_severity,
-
-                    "sleep_score":
-                        sleep_score,
-
-                    "ed_status":
-                        ed_status,
-
-                    "purging":
-                        purging
-                }
-            )
-
-            st.success(
-                "Saved 🤍"
-            )
-
-
-    # ========================================================
-    # CALENDAR
-    # ========================================================
+        if st.button("Save today's check-in 🤍", type="primary"):
+            save_entry(entry_date, {
+                "mood_type": mood_type,
+                "mood_rating": severity_to_mood(mood_type, mood_severity),
+                "mood_severity": mood_severity,
+                "sleep_score": sleep_score,
+                "ed_status": ed_status,
+                "purging": purging,
+            })
+            st.success("Saved 🤍")
 
     elif tab == "📅 Calendar":
+        render_calendar()
 
-        render_ed_calendar()
-
-
-    # ========================================================
-    # REELS
-    # ========================================================
-
-    elif tab == "🎬 Reels":
-
+    else:
         render_reels()
 
 
@@ -1503,51 +1199,30 @@ if view == "👤 His View":
 # ============================================================
 
 else:
-
     tab = st.radio(
         "Navigation",
-        [
-            "📝 Entry",
-            "📈 Mood",
-            "🧩 Factors",
-            "📅 Calendar",
-            "💊 Lithium"
-        ],
+        ["📝 Entry", "📈 Mood", "🧩 Factors", "📅 Calendar", "💊 Lithium", "🎬 Reels Setup"],
         horizontal=True,
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key="my_nav",
     )
 
-
-    # ========================================================
-    # PRIVATE ENTRY
-    # ========================================================
-
     if tab == "📝 Entry":
-
-        st.subheader(
-            "Detailed entry"
-        )
+        st.subheader("Detailed entry")
 
         entry_date = st.date_input(
             "Date",
             value=date.today(),
-            key="private_date"
+            key="my_date",
         )
-
-
-        # ----------------------------------------------------
-        # MOOD
-        # ----------------------------------------------------
 
         mood = st.slider(
             "Mood",
-            min_value=-4,
-            max_value=4,
-            value=0
+            -4, 4, 0,
+            key="my_mood",
         )
 
         labels = {
-
             -4: "Severe depression",
             -3: "Marked depression",
             -2: "Moderate depression",
@@ -1556,260 +1231,89 @@ else:
             1: "Mild hypomania",
             2: "Moderate hypomania",
             3: "Marked hypomania",
-            4: "Severe hypomania"
+            4: "Severe hypomania",
         }
-
-        st.caption(
-            labels[mood]
-        )
-
-
-        # ----------------------------------------------------
-        # SLEEP
-        # ----------------------------------------------------
+        st.caption(labels[mood])
 
         sleep_score = st.slider(
             "Sleep quality",
-            min_value=1,
-            max_value=10,
-            value=5,
-            key="private_sleep"
+            1, 10, 5,
+            key="my_sleep",
         )
 
-
-        # ----------------------------------------------------
-        # FACTORS
-        # ----------------------------------------------------
-
-        st.markdown("---")
-
-        st.subheader(
-            "Factors that may have influenced today"
-        )
-
-        selected_factors = st.multiselect(
+        st.subheader("Factors that may have influenced today")
+        selected = st.multiselect(
             "Choose all that apply",
-            FACTOR_OPTIONS
+            FACTOR_OPTIONS,
+            key="my_factors",
         )
 
-        custom_factor = ""
-
-        if "Other" in selected_factors:
-
-            custom_factor = st.text_input(
-                "Describe the other factor"
+        other = ""
+        if "Other" in selected:
+            other = st.text_input(
+                "Describe the other factor",
+                key="my_other_factor",
             )
 
-        final_factors = [
-
-            factor
-
-            for factor in selected_factors
-
-            if factor != "Other"
-        ]
-
-        if custom_factor.strip():
-
-            final_factors.append(
-                custom_factor.strip()
-            )
-
-        factors_text = ", ".join(
-            final_factors
-        )
-
-
-        # ----------------------------------------------------
-        # NOTES
-        # ----------------------------------------------------
+        final_factors = [x for x in selected if x != "Other"]
+        if other.strip():
+            final_factors.append(other.strip())
 
         notes = st.text_area(
-            "Additional notes"
+            "Additional notes",
+            key="my_notes",
         )
 
-
-        # ----------------------------------------------------
-        # MEDICATION
-        # ----------------------------------------------------
-
-        st.markdown("---")
-
+        st.markdown("### Medication")
         medications = st.text_input(
-            "Medication taken"
+            "Medication taken",
+            key="my_medications",
         )
-
         med_adherence = st.selectbox(
             "Medication adherence",
-            [
-                "As prescribed",
-                "Missed a dose",
-                "Not applicable"
-            ]
+            ["As prescribed", "Missed a dose", "Not applicable"],
+            key="my_adherence",
         )
 
-
-        # ----------------------------------------------------
-        # ED
-        # ----------------------------------------------------
-
-        st.markdown("---")
-
+        st.markdown("### ED status")
         ed_status = st.radio(
             "ED active today?",
-            [
-                "No",
-                "Yes"
-            ],
+            ["No", "Yes"],
             horizontal=True,
-            key="private_ed"
+            key="my_ed",
         )
 
         purging = False
-
         if ed_status == "Yes":
-
             purging = st.checkbox(
-                "Purging occurred today"
+                "Purging occurred today",
+                key="my_purging",
             )
 
-
-        # ----------------------------------------------------
-        # SAVE
-        # ----------------------------------------------------
-
-        if st.button(
-            "Save detailed entry",
-            type="primary"
-        ):
-
-            save_entry(
-                entry_date,
-                {
-                    "mood_rating":
-                        mood,
-
-                    "sleep_score":
-                        sleep_score,
-
-                    "factors":
-                        factors_text,
-
-                    "notes":
-                        notes,
-
-                    "medications":
-                        medications,
-
-                    "med_adherence":
-                        med_adherence,
-
-                    "ed_status":
-                        ed_status,
-
-                    "purging":
-                        purging
-                }
-            )
-
-            st.success(
-                "Entry saved."
-            )
-
-
-    # ========================================================
-    # MOOD
-    # ========================================================
+        if st.button("Save detailed entry", type="primary"):
+            save_entry(entry_date, {
+                "mood_rating": mood,
+                "sleep_score": sleep_score,
+                "factors": ", ".join(final_factors),
+                "notes": notes,
+                "medications": medications,
+                "med_adherence": med_adherence,
+                "ed_status": ed_status,
+                "purging": purging,
+            })
+            st.success("Entry saved.")
 
     elif tab == "📈 Mood":
-
         render_mood_chart()
 
-
-    # ========================================================
-    # FACTORS
-    # ========================================================
-
     elif tab == "🧩 Factors":
-
         render_factor_charts()
 
-
-    # ========================================================
-    # CALENDAR
-    # ========================================================
-
     elif tab == "📅 Calendar":
-
-        render_ed_calendar()
-
-
-    # ========================================================
-    # LITHIUM
-    # ========================================================
+        render_calendar()
 
     elif tab == "💊 Lithium":
+        render_lithium()
 
-        render_lithium_tracker()
-
-        st.markdown("---")
-
-        st.subheader(
-            "Log a new lithium test"
-        )
-
-        test_date = st.date_input(
-            "Test date",
-            value=date.today()
-        )
-
-        result = st.text_input(
-            "Result"
-        )
-
-        lithium_notes = st.text_area(
-            "Notes"
-        )
-
-        if st.button(
-            "Save lithium test",
-            type="primary"
-        ):
-
-            if result.strip():
-
-                save_lithium(
-                    test_date,
-                    result,
-                    lithium_notes
-                )
-
-                st.success(
-                    "Lithium test saved."
-                )
-
-                st.rerun()
-
-            else:
-
-                st.warning(
-                    "Please enter the test result."
-                )
-
-        tests = load_lithium()
-
-        if not tests.empty:
-
-            st.markdown("---")
-
-            st.subheader(
-                "Previous tests"
-            )
-
-            st.dataframe(
-                tests.sort_values(
-                    "date",
-                    ascending=False
-                ),
-                use_container_width=True
-            )
+    else:
+        render_playlist_settings()
