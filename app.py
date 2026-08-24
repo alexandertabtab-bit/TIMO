@@ -1,80 +1,181 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import os
 import base64
-from datetime import date
+import calendar
+from datetime import date, datetime
+
 import plotly.graph_objects as go
 
 
 # ============================================================
-# CONFIG
+# APP CONFIG
 # ============================================================
 
+st.set_page_config(
+    page_title="Life Chart 🌙",
+    page_icon="🌙",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
 DATA_FILE = "life_chart_data.csv"
-MED_CHANGE_FILE = "med_changes.csv"
 LITHIUM_FILE = "lithium_tests.csv"
-REELS_FILE = "reels.csv"
+
+BACKGROUND_IMAGE = "assets/mosque_background.jpg"
 
 LITHIUM_INTERVAL_DAYS = 182
 
-# Change this if your mosque image has another name
-BACKGROUND_IMAGE = "assets/background.jpg"
+
+# ============================================================
+# DATA
+# ============================================================
+
+COLUMNS = [
+    "date",
+    "mood_type",
+    "mood_rating",
+    "mood_severity",
+    "sleep_score",
+    "ed_status",
+    "purging",
+    "factors",
+    "notes",
+    "medications",
+    "med_adherence"
+]
 
 
-st.set_page_config(
-    page_title="Life Chart Tracker",
-    layout="centered",
-    page_icon="🌙",
-    initial_sidebar_state="collapsed",
-)
+FACTOR_OPTIONS = [
+
+    # Sleep
+    "Lack of sleep",
+    "Poor quality sleep",
+    "Oversleeping",
+    "Changed sleep schedule",
+
+    # Nicotine
+    "Nicotine deficiency / withdrawal",
+    "Nicotine use",
+    "Smoking more than usual",
+    "Smoking less than usual",
+
+    # Work
+    "Problem at work",
+    "Work stress",
+    "Heavy workload",
+    "Conflict with colleague",
+    "Conflict with boss",
+    "Job uncertainty",
+
+    # Family
+    "Family conflict",
+    "Family stress",
+    "Family pressure",
+
+    # Relationship / social
+    "Relationship conflict",
+    "Loneliness",
+    "Social stress",
+    "Argument with someone",
+    "Feeling isolated",
+
+    # Mental / emotional
+    "Anxiety",
+    "Overthinking",
+    "Feeling overwhelmed",
+    "Stress",
+    "Boredom",
+
+    # Physical
+    "Physical illness",
+    "Pain",
+    "Headache / migraine",
+    "Fatigue",
+
+    # Medication
+    "Missed medication",
+    "Medication change",
+
+    # Lifestyle
+    "Too much caffeine",
+    "Lack of caffeine",
+    "Exercise",
+    "Lack of exercise",
+    "Travel",
+    "Change in routine",
+
+    # Positive
+    "Good social interaction",
+    "Positive event",
+    "Relaxation",
+    "Good day",
+
+    "Other"
+]
 
 
 # ============================================================
-# BACKGROUND
+# DAILY QUOTES
 # ============================================================
 
-def inject_background():
+DAILY_QUOTES = [
 
-    if not os.path.exists(BACKGROUND_IMAGE):
-        return
+    (
+        "رَبِّ اشْرَحْ لِي صَدْرِي",
+        "My Lord, expand for me my chest. — Quran 20:25"
+    ),
 
-    extension = os.path.splitext(BACKGROUND_IMAGE)[1].lower()
+    (
+        "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+        "Indeed, with hardship comes ease. — Quran 94:6"
+    ),
 
-    if extension == ".png":
-        mime = "image/png"
-    elif extension == ".webp":
-        mime = "image/webp"
-    else:
-        mime = "image/jpeg"
+    (
+        "لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا",
+        "Do not grieve; indeed Allah is with us. — Quran 9:40"
+    ),
 
-    with open(BACKGROUND_IMAGE, "rb") as f:
-        b64 = base64.b64encode(f.read()).decode()
+    (
+        "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
+        "Surely in the remembrance of Allah do hearts find comfort. — Quran 13:28"
+    ),
 
-    st.markdown(
-        f"""
-        <style>
+    (
+        "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+        "Allah is sufficient for us, and He is the best disposer of affairs."
+    ),
 
-        [data-testid="stAppViewContainer"] {{
-            background-image:
-                linear-gradient(
-                    rgba(250, 248, 245, 0.55),
-                    rgba(250, 248, 245, 0.65)
-                ),
-                url("data:{mime};base64,{b64}");
+    (
+        "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ",
+        "Whoever puts their trust in Allah, He is sufficient for them. — Quran 65:3"
+    ),
 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }}
+    (
+        "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا",
+        "Allah does not burden a soul beyond what it can bear. — Quran 2:286"
+    ),
 
-        </style>
-        """,
-        unsafe_allow_html=True,
+    (
+        "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
+        "Indeed, Allah is with those who are patient. — Quran 2:153"
+    ),
+
+    (
+        "وَقُل رَّبِّ زِدْنِي عِلْمًا",
+        "My Lord, increase me in knowledge. — Quran 20:114"
+    ),
+
+    (
+        "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا",
+        "So surely with hardship comes ease. — Quran 94:5"
     )
+]
 
 
 # ============================================================
-# MOBILE / INSTAGRAM STYLE
+# CSS
 # ============================================================
 
 def inject_css():
@@ -96,11 +197,16 @@ def inject_css():
         }
 
         .block-container {
-            max-width: 600px;
-            padding-top: 1rem;
-            padding-bottom: 6rem;
-            padding-left: 14px;
-            padding-right: 14px;
+            max-width: 520px;
+            margin: auto;
+            padding-top: 15px;
+            padding-left: 12px;
+            padding-right: 12px;
+            padding-bottom: 80px;
+        }
+
+        h1 {
+            text-align: center;
         }
 
         .stButton > button {
@@ -112,239 +218,175 @@ def inject_css():
         }
 
         textarea {
-            border-radius: 16px !important;
+            border-radius: 18px !important;
         }
 
         div[data-baseweb="input"] > div {
             border-radius: 16px;
         }
 
+        div[data-baseweb="select"] > div {
+            border-radius: 16px;
+        }
+
         .quote-card {
-            background: rgba(255,255,255,0.80);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
+
+            background: rgba(255,255,255,0.82);
+
+            backdrop-filter: blur(10px);
+
             padding: 22px;
-            margin-bottom: 18px;
+
+            border-radius: 25px;
+
+            margin-bottom: 20px;
+
             text-align: center;
         }
 
         .arabic-quote {
-            font-size: 24px;
-            line-height: 1.8;
+
+            font-size: 27px;
+
+            line-height: 2;
+
             direction: rtl;
+
+            text-align: center;
+
+            font-family:
+                "Noto Naskh Arabic",
+                "Amiri",
+                serif;
+
+            font-weight: 600;
+
             margin-bottom: 12px;
         }
 
         .english-quote {
+
             font-size: 15px;
-            line-height: 1.5;
+
+            line-height: 1.6;
+
+            text-align: center;
+
             font-style: italic;
-            opacity: 0.8;
+
+            opacity: 0.85;
         }
 
         .calendar-day {
+
             background: rgba(255,255,255,0.82);
-            border-radius: 12px;
-            padding: 10px;
-            min-height: 72px;
+
+            border-radius: 10px;
+
+            padding: 7px;
+
+            min-height: 55px;
+
             text-align: center;
-            font-size: 13px;
+
+            font-size: 11px;
+
+            margin: 2px;
         }
 
-        .purging-day {
-            background: rgba(255,220,220,0.9);
+        .calendar-header {
+
+            text-align: center;
+
+            font-weight: bold;
+
+            font-size: 11px;
+
+            opacity: 0.8;
         }
 
-        .ed-day {
-            background: rgba(255,240,210,0.9);
-        }
-
-        .reel-container {
-            background: rgba(0,0,0,0.90);
-            border-radius: 24px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
 
             .block-container {
-                padding-left: 10px;
-                padding-right: 10px;
+
+                width: 100%;
+
+                padding-left: 8px;
+
+                padding-right: 8px;
             }
 
             h1 {
+
                 font-size: 27px !important;
             }
 
             .stButton > button {
-                min-height: 56px;
+
+                min-height: 55px;
+
+                border-radius: 18px;
             }
 
         }
 
         </style>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
+    )
+
+
+# ============================================================
+# BACKGROUND
+# ============================================================
+
+def inject_background():
+
+    if not os.path.exists(BACKGROUND_IMAGE):
+
+        return
+
+    with open(
+        BACKGROUND_IMAGE,
+        "rb"
+    ) as image_file:
+
+        encoded = base64.b64encode(
+            image_file.read()
+        ).decode()
+
+    st.markdown(
+        f"""
+        <style>
+
+        [data-testid="stAppViewContainer"] {{
+
+            background-image:
+
+                linear-gradient(
+                    rgba(10, 20, 15, 0.35),
+                    rgba(10, 20, 15, 0.45)
+                ),
+
+                url(
+                    "data:image/jpeg;base64,{encoded}"
+                );
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-attachment: fixed;
+        }}
+
+        </style>
+        """,
+        unsafe_allow_html=True
     )
 
 
 inject_css()
 inject_background()
-
-
-# ============================================================
-# DATA COLUMNS
-# ============================================================
-
-COLUMNS = [
-    "date",
-    "mood_rating",
-    "mood_severity",
-    "sleep_hours",
-    "sleep_quality",
-
-    "irritability",
-    "ultradian_cycling",
-    "cycling_notes",
-
-    "medications",
-    "med_adherence",
-
-    "ate_meals",
-    "ed_status",
-    "purging",
-
-    "factors",
-    "life_events",
-
-    "caffeine",
-    "nicotine",
-    "alcohol",
-    "other_substance",
-
-    "notes",
-    "caregiver_notes",
-]
-
-
-MED_CHANGE_COLUMNS = [
-    "date",
-    "change_description",
-]
-
-
-REELS_COLUMNS = [
-    "title",
-    "url",
-    "category",
-    "added_by",
-]
-
-
-MOOD_LABELS = {
-    -4: "Severe depression",
-    -3: "Marked depression",
-    -2: "Moderate depression",
-    -1: "Mild depression",
-    0: "Stable",
-    1: "Mild hypomania",
-    2: "Moderate hypomania",
-    3: "Marked hypomania",
-    4: "Severe hypomania",
-}
-
-
-SLEEP_QUALITY_HOURS = {
-    "Very bad": 3.0,
-    "Bad": 4.5,
-    "Okay": 6.0,
-    "Good": 7.5,
-    "Excellent": 9.0,
-}
-
-
-# ============================================================
-# DAILY ISLAMIC QUOTES
-# ============================================================
-
-DAILY_QUOTES = [
-
-    (
-        "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
-        "Indeed, with hardship comes ease. — Quran 94:6"
-    ),
-
-    (
-        "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا",
-        "Allah does not burden a soul beyond what it can bear. — Quran 2:286"
-    ),
-
-    (
-        "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
-        "Surely in the remembrance of Allah do hearts find comfort. — Quran 13:28"
-    ),
-
-    (
-        "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
-        "Allah is sufficient for us, and He is the best disposer of affairs."
-    ),
-
-    (
-        "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ",
-        "Whoever puts their trust in Allah, He is sufficient for them. — Quran 65:3"
-    ),
-
-    (
-        "لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا",
-        "Do not grieve; indeed Allah is with us. — Quran 9:40"
-    ),
-
-    (
-        "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
-        "Indeed, Allah is with those who are patient. — Quran 2:153"
-    ),
-
-    (
-        "رَبِّ اشْرَحْ لِي صَدْرِي",
-        "My Lord, expand for me my chest. — Quran 20:25"
-    ),
-
-    (
-        "مَنْ صَبَرَ ظَفِرَ",
-        "Whoever is patient will succeed."
-    ),
-
-]
-
-
-def get_daily_quote():
-
-    index = date.today().toordinal() % len(DAILY_QUOTES)
-
-    return DAILY_QUOTES[index]
-
-
-def render_daily_quote():
-
-    arabic, english = get_daily_quote()
-
-    st.markdown(
-        f"""
-        <div class="quote-card">
-
-            <div class="arabic-quote">
-                {arabic}
-            </div>
-
-            <div class="english-quote">
-                {english}
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
 
 # ============================================================
@@ -356,126 +398,63 @@ def load_data():
     if os.path.exists(DATA_FILE):
 
         df = pd.read_csv(
-            DATA_FILE,
-            parse_dates=["date"]
+            DATA_FILE
         )
 
-        for col in COLUMNS:
+        df["date"] = pd.to_datetime(
+            df["date"]
+        )
 
-            if col not in df.columns:
-                df[col] = None
+        for column in COLUMNS:
+
+            if column not in df.columns:
+
+                df[column] = None
 
         return df[COLUMNS]
 
-    return pd.DataFrame(columns=COLUMNS)
+    return pd.DataFrame(
+        columns=COLUMNS
+    )
 
 
-def save_entry(entry):
+def save_entry(
+    entry_date,
+    updates
+):
 
     df = load_data()
 
-    entry_date = pd.Timestamp(entry["date"])
-
-    df = df[df["date"] != entry_date]
-
-    df = pd.concat(
-        [
-            df,
-            pd.DataFrame([entry])
-        ],
-        ignore_index=True
+    entry_date = pd.Timestamp(
+        entry_date
     )
 
-    df = df.sort_values("date")
-
-    df.to_csv(
-        DATA_FILE,
-        index=False
-    )
-
-    return df
-
-
-def upsert_entry(entry_date, partial):
-
-    df = load_data()
-
-    ts = pd.Timestamp(entry_date)
-
-    existing = df[df["date"] == ts]
+    existing = df[
+        df["date"] == entry_date
+    ]
 
     if existing.empty:
 
         row = {
-            c: None
-            for c in COLUMNS
+            column: None
+            for column in COLUMNS
         }
 
-        row["date"] = ts
+        row["date"] = entry_date
 
     else:
 
         row = existing.iloc[0].to_dict()
 
-    row.update(partial)
+    row.update(updates)
 
-    df = df[df["date"] != ts]
+    df = df[
+        df["date"] != entry_date
+    ]
 
-    df = pd.concat(
-        [
-            df,
-            pd.DataFrame([row])
-        ],
-        ignore_index=True
+    new_row = pd.DataFrame(
+        [row]
     )
-
-    df = df.sort_values("date")
-
-    df.to_csv(
-        DATA_FILE,
-        index=False
-    )
-
-    return df
-
-
-# ============================================================
-# LITHIUM TRACKER
-# ============================================================
-
-def load_lithium_tests():
-
-    if os.path.exists(LITHIUM_FILE):
-
-        return pd.read_csv(
-            LITHIUM_FILE,
-            parse_dates=["date"]
-        )
-
-    return pd.DataFrame(
-        columns=[
-            "date",
-            "result",
-            "notes"
-        ]
-    )
-
-
-def save_lithium_test(
-    test_date,
-    result,
-    notes
-):
-
-    df = load_lithium_tests()
-
-    new_row = pd.DataFrame([
-        {
-            "date": pd.Timestamp(test_date),
-            "result": result,
-            "notes": notes
-        }
-    ])
 
     df = pd.concat(
         [
@@ -485,179 +464,50 @@ def save_lithium_test(
         ignore_index=True
     )
 
-    df = df.sort_values("date")
+    df = df.sort_values(
+        "date"
+    )
 
     df.to_csv(
-        LITHIUM_FILE,
-        index=False
-    )
-
-    return df
-
-
-def render_lithium_tracker():
-
-    st.subheader("💊 Lithium tracker")
-
-    tests = load_lithium_tests()
-
-    if tests.empty:
-
-        st.info(
-            "No lithium test logged yet."
-        )
-
-    else:
-
-        last = tests.sort_values(
-            "date"
-        ).iloc[-1]
-
-        last_date = last["date"]
-
-        next_due = (
-            last_date
-            + pd.Timedelta(
-                days=LITHIUM_INTERVAL_DAYS
-            )
-        )
-
-        days_left = (
-            next_due
-            - pd.Timestamp.today()
-        ).days
-
-        col1, col2 = st.columns(2)
-
-        col1.metric(
-            "Last test",
-            str(last_date.date())
-        )
-
-        col2.metric(
-            "Next test",
-            str(next_due.date())
-        )
-
-        st.write(
-            f"**Last result:** {last['result']}"
-        )
-
-        if pd.notna(last["notes"]):
-
-            if str(last["notes"]).strip():
-
-                st.caption(
-                    str(last["notes"])
-                )
-
-        if days_left < 0:
-
-            st.error(
-                f"⚠️ Overdue by {-days_left} days"
-            )
-
-        elif days_left <= 14:
-
-            st.warning(
-                f"⚠️ Due in {days_left} days"
-            )
-
-        else:
-
-            st.success(
-                f"Next check in approximately {days_left} days"
-            )
-
-
-# ============================================================
-# MEDICATION CHANGES
-# ============================================================
-
-def load_med_changes():
-
-    if os.path.exists(MED_CHANGE_FILE):
-
-        return pd.read_csv(
-            MED_CHANGE_FILE,
-            parse_dates=["date"]
-        )
-
-    return pd.DataFrame(
-        columns=MED_CHANGE_COLUMNS
-    )
-
-
-def save_med_change(
-    entry_date,
-    description
-):
-
-    df = load_med_changes()
-
-    df = pd.concat(
-        [
-            df,
-            pd.DataFrame([
-                {
-                    "date": pd.Timestamp(entry_date),
-                    "change_description": description
-                }
-            ])
-        ],
-        ignore_index=True
-    )
-
-    df = df.sort_values("date")
-
-    df.to_csv(
-        MED_CHANGE_FILE,
+        DATA_FILE,
         index=False
     )
 
 
 # ============================================================
-# REELS
+# DAILY QUOTE
 # ============================================================
 
-def load_reels():
+def render_quote():
 
-    if os.path.exists(REELS_FILE):
-
-        return pd.read_csv(REELS_FILE)
-
-    return pd.DataFrame(
-        columns=REELS_COLUMNS
+    index = (
+        date.today().toordinal()
+        % len(DAILY_QUOTES)
     )
 
+    arabic, english = DAILY_QUOTES[
+        index
+    ]
 
-def save_reel(
-    title,
-    url,
-    category,
-    added_by
-):
+    st.markdown(
+        f"""
+        <div class="quote-card">
 
-    df = load_reels()
+            <div class="arabic-quote">
 
-    df = pd.concat(
-        [
-            df,
-            pd.DataFrame([
-                {
-                    "title": title,
-                    "url": url,
-                    "category": category,
-                    "added_by": added_by
-                }
-            ])
-        ],
-        ignore_index=True
-    )
+                {arabic}
 
-    df.to_csv(
-        REELS_FILE,
-        index=False
+            </div>
+
+            <div class="english-quote">
+
+                {english}
+
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
 
@@ -674,12 +524,13 @@ def severity_to_mood(
 
         return 0
 
-    level = min(
-        4,
-        max(
-            1,
-            round(severity / 2.5)
-        )
+    level = round(
+        severity / 2.5
+    )
+
+    level = max(
+        1,
+        min(4, level)
     )
 
     if mood_type == "Depression":
@@ -690,78 +541,155 @@ def severity_to_mood(
 
 
 # ============================================================
-# MOOD CHART
+# LITHIUM TRACKER
 # ============================================================
 
-def render_mood_chart(
-    df,
-    med_changes
+def load_lithium():
+
+    if os.path.exists(LITHIUM_FILE):
+
+        df = pd.read_csv(
+            LITHIUM_FILE
+        )
+
+        df["date"] = pd.to_datetime(
+            df["date"]
+        )
+
+        return df
+
+    return pd.DataFrame(
+        columns=[
+            "date",
+            "result",
+            "notes"
+        ]
+    )
+
+
+def save_lithium(
+    test_date,
+    result,
+    notes
 ):
 
-    if df.empty:
+    df = load_lithium()
 
-        st.info("No entries yet.")
+    new_row = pd.DataFrame([
+        {
+            "date": pd.Timestamp(
+                test_date
+            ),
+
+            "result": result,
+
+            "notes": notes
+        }
+    ])
+
+    df = pd.concat(
+        [
+            df,
+            new_row
+        ],
+        ignore_index=True
+    )
+
+    df = df.sort_values(
+        "date"
+    )
+
+    df.to_csv(
+        LITHIUM_FILE,
+        index=False
+    )
+
+
+def render_lithium_tracker():
+
+    tests = load_lithium()
+
+    st.subheader(
+        "💊 Lithium tracker"
+    )
+
+    if tests.empty:
+
+        st.info(
+            "No lithium test has been logged yet."
+        )
 
         return
 
-    df = df.sort_values("date")
+    tests = tests.sort_values(
+        "date"
+    )
 
-    colors = []
+    last = tests.iloc[-1]
 
-    for mood in df["mood_rating"]:
+    last_date = last["date"]
 
-        if mood > 0:
-            colors.append("#9b59b6")
-
-        elif mood < 0:
-            colors.append("#3498db")
-
-        else:
-            colors.append("#2ecc71")
-
-    fig = go.Figure()
-
-    fig.add_trace(
-        go.Scatter(
-            x=df["date"],
-            y=df["mood_rating"],
-            mode="lines+markers",
-            marker=dict(
-                color=colors,
-                size=10
-            ),
-            line=dict(
-                color="lightgray"
-            )
+    next_date = (
+        last_date
+        + pd.Timedelta(
+            days=LITHIUM_INTERVAL_DAYS
         )
     )
 
-    fig.add_hline(
-        y=0,
-        line_dash="dash"
+    days_remaining = (
+        next_date
+        - pd.Timestamp.today()
+    ).days
+
+    col1, col2 = st.columns(2)
+
+    col1.metric(
+        "Last test",
+        last_date.strftime(
+            "%d %b %Y"
+        )
     )
 
-    if not med_changes.empty:
+    col2.metric(
+        "Next test",
+        next_date.strftime(
+            "%d %b %Y"
+        )
+    )
 
-        for _, mc in med_changes.iterrows():
+    st.write(
+        f"**Result:** {last['result']}"
+    )
 
-            fig.add_vline(
-                x=mc["date"],
-                line_dash="dot"
+    if pd.notna(
+        last["notes"]
+    ):
+
+        if str(
+            last["notes"]
+        ).strip():
+
+            st.caption(
+                str(last["notes"])
             )
 
-    fig.update_layout(
-        title="Mood over time",
-        yaxis=dict(
-            range=[-4.5, 4.5]
-        ),
-        height=420
-    )
+    if days_remaining < 0:
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+        st.error(
+            f"⚠️ The next lithium test is overdue by {-days_remaining} days."
+        )
+
+    elif days_remaining <= 14:
+
+        st.warning(
+            f"⚠️ The next lithium test is due in {days_remaining} days."
+        )
+
+    else:
+
+        st.success(
+            f"Next test is in approximately {days_remaining} days."
+        )
 
 
 # ============================================================
@@ -772,155 +700,158 @@ def render_ed_calendar():
 
     df = load_data()
 
-    if df.empty:
+    st.subheader(
+        "📅 ED & Purging Calendar"
+    )
 
-        st.info(
-            "No ED or purging days logged yet."
+    selected_month = st.date_input(
+        "Choose month",
+        value=date.today(),
+        key="calendar_month"
+    )
+
+    year = selected_month.year
+
+    month = selected_month.month
+
+    month_name = calendar.month_name[
+        month
+    ]
+
+    st.markdown(
+        f"### {month_name} {year}"
+    )
+
+    if not df.empty:
+
+        df["date"] = pd.to_datetime(
+            df["date"]
         )
 
-        return
-
-    df["date"] = pd.to_datetime(
-        df["date"]
+    cal = calendar.monthcalendar(
+        year,
+        month
     )
 
-    df = df.sort_values("date")
+    day_names = [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+    ]
 
-    st.subheader("📅 ED & purging calendar")
+    header_cols = st.columns(7)
 
-    st.caption(
-        "🟡 ED unstable   🔴 Purging"
-    )
+    for i, day_name in enumerate(
+        day_names
+    ):
 
-    start_date = df["date"].min().date()
-
-    end_date = max(
-        date.today(),
-        df["date"].max().date()
-    )
-
-    all_days = pd.date_range(
-        start=start_date,
-        end=end_date,
-        freq="D"
-    )
-
-    rows = []
-
-    for day in all_days:
-
-        row = df[
-            df["date"].dt.date
-            == day.date()
-        ]
-
-        status = ""
-
-        if not row.empty:
-
-            latest = row.iloc[-1]
-
-            ed_status = str(
-                latest.get(
-                    "ed_status",
-                    ""
-                )
-            )
-
-            purging = latest.get(
-                "purging",
-                False
-            )
-
-            if purging == True:
-
-                status = "🔴 Purging"
-
-            elif ed_status.lower() in [
-                "yes",
-                "not stable",
-                "unstable"
-            ]:
-
-                status = "🟡 ED"
-
-        rows.append({
-            "Date": day.date(),
-            "Status": status
-        })
-
-    calendar_df = pd.DataFrame(rows)
-
-    calendar_df["Week"] = (
-        pd.to_datetime(
-            calendar_df["Date"]
+        header_cols[i].markdown(
+            f"""
+            <div class="calendar-header">
+                {day_name}
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-        .dt.isocalendar()
-        .week
-        .astype(int)
-    )
 
-    calendar_df["Day"] = (
-        pd.to_datetime(
-            calendar_df["Date"]
-        )
-        .dt.day_name()
-    )
-
-    weeks = calendar_df["Week"].unique()
-
-    for week in weeks:
-
-        week_df = calendar_df[
-            calendar_df["Week"] == week
-        ]
+    for week in cal:
 
         cols = st.columns(7)
 
-        ordered_days = [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday"
-        ]
+        for i, day_number in enumerate(
+            week
+        ):
 
-        for i, day_name in enumerate(ordered_days):
+            if day_number == 0:
 
-            day_row = week_df[
-                week_df["Day"] == day_name
-            ]
+                cols[i].write("")
 
-            if not day_row.empty:
+                continue
 
-                day_data = day_row.iloc[0]
+            current_date = pd.Timestamp(
+                year=year,
+                month=month,
+                day=day_number
+            )
 
-                day_number = pd.Timestamp(
-                    day_data["Date"]
-                ).day
+            status = ""
 
-                status = day_data["Status"]
+            if not df.empty:
 
-                cols[i].markdown(
-                    f"""
-                    <div class="calendar-day">
-                        <b>{day_number}</b><br>
-                        {status}
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                matching = df[
+                    df["date"]
+                    == current_date
+                ]
+
+                if not matching.empty:
+
+                    row = matching.iloc[-1]
+
+                    ed_status = str(
+                        row.get(
+                            "ed_status",
+                            ""
+                        )
+                    ).lower()
+
+                    purging = row.get(
+                        "purging",
+                        False
+                    )
+
+                    if str(purging).lower() in [
+                        "true",
+                        "yes",
+                        "1"
+                    ]:
+
+                        status = "🔴<br>Purging"
+
+                    elif ed_status == "yes":
+
+                        status = "🟡<br>ED"
+
+            cols[i].markdown(
+                f"""
+                <div class="calendar-day">
+
+                    <b>
+                        {day_number}
+                    </b>
+
+                    <br>
+
+                    {status}
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    st.caption(
+        "🟡 ED active day • 🔴 Purging occurred"
+    )
 
 
 # ============================================================
-# FACTOR CHARTS FOR PRIVATE VIEW
+# MOOD CHART
 # ============================================================
 
-def render_factor_chart():
+def render_mood_chart():
 
     df = load_data()
+
+    if df.empty:
+
+        st.info(
+            "No mood data yet."
+        )
+
+        return
 
     df = df.dropna(
         subset=["mood_rating"]
@@ -928,51 +859,114 @@ def render_factor_chart():
 
     if df.empty:
 
-        st.info("No data yet.")
+        return
+
+    df = df.sort_values(
+        "date"
+    )
+
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=df["date"],
+            y=df["mood_rating"],
+            mode="lines+markers",
+            marker=dict(
+                size=10
+            )
+        )
+    )
+
+    fig.add_hline(
+        y=0,
+        line_dash="dash"
+    )
+
+    fig.update_layout(
+        title="Mood over time",
+        height=400,
+        yaxis=dict(
+            range=[-4.5, 4.5]
+        ),
+        margin=dict(
+            l=10,
+            r=10,
+            t=50,
+            b=20
+        )
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+
+# ============================================================
+# FACTOR CHARTS
+# ============================================================
+
+def render_factor_charts():
+
+    df = load_data()
+
+    if df.empty:
+
+        st.info(
+            "No factor data yet."
+        )
 
         return
 
-    factor_rows = []
+    all_factors = []
 
     for _, row in df.iterrows():
 
-        factors = str(
-            row.get(
-                "factors",
-                ""
-            )
+        factors = row.get(
+            "factors"
         )
 
-        if factors == "nan":
+        if pd.isna(factors):
+
             continue
 
-        for factor in factors.split(","):
+        for factor in str(
+            factors
+        ).split(","):
 
             factor = factor.strip()
 
             if factor:
 
-                factor_rows.append({
-                    "Factor": factor,
-                    "Severity": abs(
-                        row["mood_rating"]
-                    )
-                })
+                all_factors.append(
+                    {
+                        "factor": factor,
+                        "mood": abs(
+                            float(
+                                row.get(
+                                    "mood_rating",
+                                    0
+                                )
+                            )
+                        )
+                    }
+                )
 
-    if not factor_rows:
+    if not all_factors:
 
         st.info(
-            "No factors logged."
+            "No factors have been logged yet."
         )
 
         return
 
     factor_df = pd.DataFrame(
-        factor_rows
+        all_factors
     )
 
     counts = (
-        factor_df["Factor"]
+        factor_df["factor"]
         .value_counts()
     )
 
@@ -987,7 +981,9 @@ def render_factor_chart():
 
     fig.update_layout(
         title="Most common factors",
-        height=350
+        height=400,
+        xaxis_title="Factor",
+        yaxis_title="Times mentioned"
     )
 
     st.plotly_chart(
@@ -997,30 +993,294 @@ def render_factor_chart():
 
 
 # ============================================================
-# TITLE
+# INSTAGRAM STYLE REELS
 # ============================================================
 
-st.title("🌙 Life Chart")
+def render_reels():
 
-render_daily_quote()
+    # ADD YOUR REELS HERE
+    # You only need to put links once.
+
+    reels = [
+
+        {
+            "title": "Islamic reminder",
+            "url": "",
+            "type": "youtube"
+        },
+
+        {
+            "title": "Motivation",
+            "url": "",
+            "type": "youtube"
+        },
+
+        {
+            "title": "A reminder for difficult days",
+            "url": "",
+            "type": "youtube"
+        }
+    ]
+
+    valid_reels = []
+
+    for reel in reels:
+
+        if reel["url"].strip():
+
+            valid_reels.append(
+                reel
+            )
+
+    if not valid_reels:
+
+        st.info(
+            "No reels have been added yet. "
+            "Add links inside the reels section in app.py."
+        )
+
+        return
+
+    reels_html = ""
+
+    for reel in valid_reels:
+
+        url = reel["url"]
+
+        title = reel["title"]
+
+        # YouTube Shorts support
+
+        if "youtube.com" in url:
+
+            if "/shorts/" in url:
+
+                video_id = url.split(
+                    "/shorts/"
+                )[1].split("?")[0]
+
+                embed_url = (
+                    "https://www.youtube.com/embed/"
+                    + video_id
+                )
+
+            elif "watch?v=" in url:
+
+                video_id = url.split(
+                    "watch?v="
+                )[1].split("&")[0]
+
+                embed_url = (
+                    "https://www.youtube.com/embed/"
+                    + video_id
+                )
+
+            else:
+
+                embed_url = url
+
+            media = f'''
+            <iframe
+                src="{embed_url}"
+                allowfullscreen
+                allow="autoplay; encrypted-media"
+            ></iframe>
+            '''
+
+        # Direct MP4 support
+
+        elif url.endswith(
+            ".mp4"
+        ):
+
+            media = f'''
+            <video
+                controls
+                playsinline
+                preload="metadata"
+            >
+                <source
+                    src="{url}"
+                    type="video/mp4"
+                >
+            </video>
+            '''
+
+        else:
+
+            media = f'''
+            <div class="unsupported">
+
+                This video format is not supported.
+
+            </div>
+            '''
+
+        reels_html += f'''
+
+        <div class="reel">
+
+            {media}
+
+            <div class="overlay">
+
+                <div class="reel-title">
+
+                    {title}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        '''
+
+    html = f"""
+
+    <html>
+
+    <head>
+
+    <style>
+
+    * {{
+        box-sizing: border-box;
+    }}
+
+    body {{
+        margin: 0;
+        background: black;
+        overflow: hidden;
+    }}
+
+    .feed {{
+
+        height: 100vh;
+
+        overflow-y: scroll;
+
+        scroll-snap-type:
+            y mandatory;
+
+        scrollbar-width: none;
+    }}
+
+    .feed::-webkit-scrollbar {{
+        display: none;
+    }}
+
+    .reel {{
+
+        width: 100%;
+
+        height: 100vh;
+
+        position: relative;
+
+        scroll-snap-align: start;
+
+        background: black;
+    }}
+
+    iframe,
+    video {{
+
+        width: 100%;
+
+        height: 100%;
+
+        border: none;
+
+        object-fit: cover;
+    }}
+
+    .overlay {{
+
+        position: absolute;
+
+        bottom: 0;
+
+        left: 0;
+
+        right: 0;
+
+        padding:
+            100px 20px 40px 20px;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                transparent,
+                rgba(0,0,0,0.9)
+            );
+    }}
+
+    .reel-title {{
+
+        font-size: 18px;
+
+        font-weight: bold;
+
+        line-height: 1.5;
+    }}
+
+    .unsupported {{
+
+        color: white;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        height: 100%;
+    }}
+
+    </style>
+
+    </head>
+
+    <body>
+
+        <div class="feed">
+
+            {reels_html}
+
+        </div>
+
+    </body>
+
+    </html>
+    """
+
+    components.html(
+        html,
+        height=750,
+        scrolling=False
+    )
 
 
 # ============================================================
-# VIEW SELECTOR
+# MAIN APP
 # ============================================================
 
-view = st.radio(
-    "View",
-    [
-        "👤 His view",
-        "🔐 Your view"
-    ],
-    horizontal=True
+st.title(
+    "🌙 Life Chart"
 )
 
+render_quote()
 
-full_view = (
-    view == "🔐 Your view"
+
+view = st.radio(
+    "Choose view",
+    [
+        "👤 His View",
+        "🔐 My View"
+    ],
+    horizontal=True
 )
 
 
@@ -1028,7 +1288,7 @@ full_view = (
 # HIS VIEW
 # ============================================================
 
-if not full_view:
+if view == "👤 His View":
 
     tab = st.radio(
         "Navigation",
@@ -1042,9 +1302,9 @@ if not full_view:
     )
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # CHECK-IN
-    # --------------------------------------------------------
+    # ========================================================
 
     if tab == "🏠 Check-in":
 
@@ -1058,10 +1318,16 @@ if not full_view:
         )
 
 
+        # ----------------------------------------------------
         # MOOD
+        # ----------------------------------------------------
+
+        st.markdown(
+            "### Mood"
+        )
 
         mood_type = st.radio(
-            "Mood today",
+            "How do you feel today?",
             [
                 "Stable",
                 "Depression",
@@ -1076,74 +1342,74 @@ if not full_view:
 
             mood_severity = st.slider(
                 "Depression intensity",
-                1,
-                10,
-                5
-            )
-
-            st.caption(
-                f"{mood_severity}/10"
+                min_value=1,
+                max_value=10,
+                value=5
             )
 
         elif mood_type == "Hypomania":
 
             mood_severity = st.slider(
                 "Hypomania intensity",
-                1,
-                10,
-                5
-            )
-
-            st.caption(
-                f"{mood_severity}/10"
+                min_value=1,
+                max_value=10,
+                value=5
             )
 
 
-        # SLEEP
-        # ALWAYS SEPARATE
+        # ----------------------------------------------------
+        # SLEEP - ALWAYS SEPARATE
+        # ----------------------------------------------------
 
         st.markdown("---")
 
-        st.subheader(
-            "Sleep 😴"
+        st.markdown(
+            "### 😴 Sleep"
         )
 
-        sleep_spectrum = st.slider(
+        sleep_score = st.slider(
             "How was your sleep?",
-            1,
-            10,
-            5
+            min_value=1,
+            max_value=10,
+            value=5
         )
 
-        if sleep_spectrum <= 2:
-            sleep_quality = "Very bad"
+        if sleep_score <= 2:
 
-        elif sleep_spectrum <= 4:
-            sleep_quality = "Bad"
+            sleep_text = "Very bad"
 
-        elif sleep_spectrum <= 6:
-            sleep_quality = "Okay"
+        elif sleep_score <= 4:
 
-        elif sleep_spectrum <= 8:
-            sleep_quality = "Good"
+            sleep_text = "Bad"
+
+        elif sleep_score <= 6:
+
+            sleep_text = "Okay"
+
+        elif sleep_score <= 8:
+
+            sleep_text = "Good"
 
         else:
-            sleep_quality = "Excellent"
+
+            sleep_text = "Excellent"
 
         st.caption(
-            f"Sleep: {sleep_spectrum}/10 — {sleep_quality}"
+            f"{sleep_score}/10 — {sleep_text}"
         )
 
 
+        # ----------------------------------------------------
         # ED STATUS
+        # ----------------------------------------------------
 
         st.markdown("---")
 
-        st.subheader(
-            "ED status"
+        st.markdown(
+            "### ED status"
         )
 
-        ed_problem = st.radio(
+        ed_status = st.radio(
             "Was your ED active today?",
             [
                 "No",
@@ -1154,7 +1420,7 @@ if not full_view:
 
         purging = False
 
-        if ed_problem == "Yes":
+        if ed_status == "Yes":
 
             purging_answer = st.radio(
                 "Did purging happen today?",
@@ -1165,15 +1431,19 @@ if not full_view:
                 horizontal=True
             )
 
-            purging = (
-                purging_answer == "Yes"
-            )
+            if purging_answer == "Yes":
+
+                purging = True
 
 
+        # ----------------------------------------------------
         # SAVE
+        # ----------------------------------------------------
+
+        st.markdown("---")
 
         if st.button(
-            "Save check-in 🤍",
+            "Save today's check-in 🤍",
             type="primary"
         ):
 
@@ -1182,13 +1452,11 @@ if not full_view:
                 mood_severity
             )
 
-            sleep_hours = (
-                sleep_spectrum / 10
-            ) * 10
-
-            upsert_entry(
+            save_entry(
                 entry_date,
                 {
+                    "mood_type":
+                        mood_type,
 
                     "mood_rating":
                         mood_rating,
@@ -1196,18 +1464,14 @@ if not full_view:
                     "mood_severity":
                         mood_severity,
 
-                    "sleep_hours":
-                        sleep_hours,
-
-                    "sleep_quality":
-                        sleep_quality,
+                    "sleep_score":
+                        sleep_score,
 
                     "ed_status":
-                        ed_problem,
+                        ed_status,
 
                     "purging":
-                        purging,
-
+                        purging
                 }
             )
 
@@ -1216,99 +1480,26 @@ if not full_view:
             )
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # CALENDAR
-    # --------------------------------------------------------
+    # ========================================================
 
     elif tab == "📅 Calendar":
 
         render_ed_calendar()
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # REELS
-    # --------------------------------------------------------
+    # ========================================================
 
     elif tab == "🎬 Reels":
 
-        st.subheader(
-            "For You"
-        )
-
-        reels = load_reels()
-
-        if reels.empty:
-
-            st.info(
-                "No reels available yet."
-            )
-
-        else:
-
-            if "reel_idx" not in st.session_state:
-
-                st.session_state.reel_idx = 0
-
-            current_index = (
-                st.session_state.reel_idx
-                % len(reels)
-            )
-
-            current = reels.iloc[
-                current_index
-            ]
-
-            st.markdown(
-                """
-                <div class="reel-container">
-                """,
-                unsafe_allow_html=True
-            )
-
-            st.video(
-                current["url"]
-            )
-
-            st.markdown(
-                """
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                f"### {current['title']}"
-            )
-
-            st.caption(
-                f"{current['category']}"
-            )
-
-            st.caption(
-                f"{current_index + 1} / {len(reels)}"
-            )
-
-            col1, col2 = st.columns(2)
-
-            if col1.button(
-                "⬆ Previous"
-            ):
-
-                st.session_state.reel_idx -= 1
-
-                st.rerun()
-
-            if col2.button(
-                "⬇ Next"
-            ):
-
-                st.session_state.reel_idx += 1
-
-                st.rerun()
+        render_reels()
 
 
 # ============================================================
-# YOUR PRIVATE VIEW
+# MY VIEW
 # ============================================================
 
 else:
@@ -1317,20 +1508,19 @@ else:
         "Navigation",
         [
             "📝 Entry",
-            "📈 Chart",
+            "📈 Mood",
             "🧩 Factors",
-            "📅 ED Calendar",
-            "💊 Lithium",
-            "📋 Summary"
+            "📅 Calendar",
+            "💊 Lithium"
         ],
         horizontal=True,
         label_visibility="collapsed"
     )
 
 
-    # --------------------------------------------------------
-    # ENTRY
-    # --------------------------------------------------------
+    # ========================================================
+    # PRIVATE ENTRY
+    # ========================================================
 
     if tab == "📝 Entry":
 
@@ -1344,78 +1534,124 @@ else:
             key="private_date"
         )
 
+
+        # ----------------------------------------------------
+        # MOOD
+        # ----------------------------------------------------
+
         mood = st.slider(
             "Mood",
-            -4,
-            4,
-            0
+            min_value=-4,
+            max_value=4,
+            value=0
         )
+
+        labels = {
+
+            -4: "Severe depression",
+            -3: "Marked depression",
+            -2: "Moderate depression",
+            -1: "Mild depression",
+            0: "Stable",
+            1: "Mild hypomania",
+            2: "Moderate hypomania",
+            3: "Marked hypomania",
+            4: "Severe hypomania"
+        }
 
         st.caption(
-            MOOD_LABELS[mood]
+            labels[mood]
         )
 
-        sleep_hours = st.number_input(
-            "Hours of sleep",
-            0.0,
-            24.0,
-            7.0,
-            0.5
+
+        # ----------------------------------------------------
+        # SLEEP
+        # ----------------------------------------------------
+
+        sleep_score = st.slider(
+            "Sleep quality",
+            min_value=1,
+            max_value=10,
+            value=5,
+            key="private_sleep"
         )
 
-        ultradian = st.checkbox(
-            "Mood switched multiple times today"
+
+        # ----------------------------------------------------
+        # FACTORS
+        # ----------------------------------------------------
+
+        st.markdown("---")
+
+        st.subheader(
+            "Factors that may have influenced today"
         )
 
-        cycling_notes = ""
+        selected_factors = st.multiselect(
+            "Choose all that apply",
+            FACTOR_OPTIONS
+        )
 
-        if ultradian:
+        custom_factor = ""
 
-            cycling_notes = st.text_input(
-                "Notes on mood switching"
+        if "Other" in selected_factors:
+
+            custom_factor = st.text_input(
+                "Describe the other factor"
             )
 
+        final_factors = [
 
+            factor
+
+            for factor in selected_factors
+
+            if factor != "Other"
+        ]
+
+        if custom_factor.strip():
+
+            final_factors.append(
+                custom_factor.strip()
+            )
+
+        factors_text = ", ".join(
+            final_factors
+        )
+
+
+        # ----------------------------------------------------
+        # NOTES
+        # ----------------------------------------------------
+
+        notes = st.text_area(
+            "Additional notes"
+        )
+
+
+        # ----------------------------------------------------
         # MEDICATION
+        # ----------------------------------------------------
+
+        st.markdown("---")
 
         medications = st.text_input(
             "Medication taken"
         )
 
         med_adherence = st.selectbox(
-            "Adherence",
+            "Medication adherence",
             [
                 "As prescribed",
                 "Missed a dose",
-                "N/A"
+                "Not applicable"
             ]
         )
 
-        with st.expander(
-            "Log medication change"
-        ):
 
-            change_desc = st.text_input(
-                "What changed?"
-            )
-
-            if st.button(
-                "Save medication change"
-            ):
-
-                if change_desc.strip():
-
-                    save_med_change(
-                        entry_date,
-                        change_desc.strip()
-                    )
-
-                    st.success(
-                        "Saved."
-                    )
-
-
+        # ----------------------------------------------------
         # ED
+        # ----------------------------------------------------
 
         st.markdown("---")
 
@@ -1425,7 +1661,8 @@ else:
                 "No",
                 "Yes"
             ],
-            horizontal=True
+            horizontal=True,
+            key="private_ed"
         )
 
         purging = False
@@ -1437,141 +1674,79 @@ else:
             )
 
 
-        # FACTORS
-
-        factors = st.text_area(
-            "Factors / life events"
-        )
-
-        notes = st.text_area(
-            "Notes"
-        )
-
-        caregiver_notes = st.text_area(
-            "Private context notes"
-        )
-
+        # ----------------------------------------------------
+        # SAVE
+        # ----------------------------------------------------
 
         if st.button(
             "Save detailed entry",
             type="primary"
         ):
 
-            entry = {
+            save_entry(
+                entry_date,
+                {
+                    "mood_rating":
+                        mood,
 
-                "date":
-                    pd.Timestamp(entry_date),
+                    "sleep_score":
+                        sleep_score,
 
-                "mood_rating":
-                    mood,
+                    "factors":
+                        factors_text,
 
-                "mood_severity":
-                    None,
+                    "notes":
+                        notes,
 
-                "sleep_hours":
-                    sleep_hours,
+                    "medications":
+                        medications,
 
-                "sleep_quality":
-                    None,
+                    "med_adherence":
+                        med_adherence,
 
-                "irritability":
-                    None,
+                    "ed_status":
+                        ed_status,
 
-                "ultradian_cycling":
-                    ultradian,
-
-                "cycling_notes":
-                    cycling_notes,
-
-                "medications":
-                    medications,
-
-                "med_adherence":
-                    med_adherence,
-
-                "ate_meals":
-                    None,
-
-                "ed_status":
-                    ed_status,
-
-                "purging":
-                    purging,
-
-                "factors":
-                    factors,
-
-                "life_events":
-                    factors,
-
-                "caffeine":
-                    None,
-
-                "nicotine":
-                    None,
-
-                "alcohol":
-                    None,
-
-                "other_substance":
-                    None,
-
-                "notes":
-                    notes,
-
-                "caregiver_notes":
-                    caregiver_notes,
-
-            }
-
-            save_entry(entry)
+                    "purging":
+                        purging
+                }
+            )
 
             st.success(
                 "Entry saved."
             )
 
 
-    # --------------------------------------------------------
-    # CHART
-    # --------------------------------------------------------
+    # ========================================================
+    # MOOD
+    # ========================================================
 
-    elif tab == "📈 Chart":
+    elif tab == "📈 Mood":
 
-        df = load_data()
-
-        df = df.dropna(
-            subset=["mood_rating"]
-        )
-
-        med_changes = load_med_changes()
-
-        render_mood_chart(
-            df,
-            med_changes
-        )
+        render_mood_chart()
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # FACTORS
-    # --------------------------------------------------------
+    # ========================================================
 
     elif tab == "🧩 Factors":
 
-        render_factor_chart()
+        render_factor_charts()
 
 
-    # --------------------------------------------------------
-    # ED CALENDAR
-    # --------------------------------------------------------
+    # ========================================================
+    # CALENDAR
+    # ========================================================
 
-    elif tab == "📅 ED Calendar":
+    elif tab == "📅 Calendar":
 
         render_ed_calendar()
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # LITHIUM
-    # --------------------------------------------------------
+    # ========================================================
 
     elif tab == "💊 Lithium":
 
@@ -1580,47 +1755,48 @@ else:
         st.markdown("---")
 
         st.subheader(
-            "Log a lithium test"
+            "Log a new lithium test"
         )
 
         test_date = st.date_input(
             "Test date",
-            value=date.today(),
-            key="lithium_date"
+            value=date.today()
         )
 
-        result = st.selectbox(
-            "Result",
-            [
-                "Stable / in range",
-                "Out of range",
-                "Pending"
-            ]
+        result = st.text_input(
+            "Result"
         )
 
-        notes = st.text_area(
-            "Notes",
-            key="lithium_notes"
+        lithium_notes = st.text_area(
+            "Notes"
         )
 
         if st.button(
-            "Log lithium test"
+            "Save lithium test",
+            type="primary"
         ):
 
-            save_lithium_test(
-                test_date,
-                result,
-                notes
-            )
+            if result.strip():
 
-            st.success(
-                "Lithium test logged."
-            )
+                save_lithium(
+                    test_date,
+                    result,
+                    lithium_notes
+                )
 
-            st.rerun()
+                st.success(
+                    "Lithium test saved."
+                )
 
+                st.rerun()
 
-        tests = load_lithium_tests()
+            else:
+
+                st.warning(
+                    "Please enter the test result."
+                )
+
+        tests = load_lithium()
 
         if not tests.empty:
 
@@ -1637,102 +1813,3 @@ else:
                 ),
                 use_container_width=True
             )
-
-
-    # --------------------------------------------------------
-    # SUMMARY
-    # --------------------------------------------------------
-
-    elif tab == "📋 Summary":
-
-        df = load_data()
-
-        df = df.dropna(
-            subset=["mood_rating"]
-        )
-
-        if df.empty:
-
-            st.info(
-                "No entries yet."
-            )
-
-        else:
-
-            window_days = st.slider(
-                "Window (days)",
-                7,
-                90,
-                30
-            )
-
-            cutoff = (
-                pd.Timestamp.today()
-                - pd.Timedelta(
-                    days=window_days
-                )
-            )
-
-            recent = df[
-                df["date"] >= cutoff
-            ]
-
-            col1, col2, col3 = st.columns(3)
-
-            col1.metric(
-                "Entries",
-                len(recent)
-            )
-
-            col2.metric(
-                "Average mood",
-                f"{recent['mood_rating'].mean():.1f}"
-                if len(recent)
-                else "—"
-            )
-
-            col3.metric(
-                "Average sleep",
-                f"{recent['sleep_hours'].mean():.1f} h"
-                if len(recent)
-                else "—"
-            )
-
-            st.markdown("---")
-
-            st.subheader(
-                "Recent notes"
-            )
-
-            for _, row in recent.iterrows():
-
-                texts = []
-
-                for column in [
-                    "life_events",
-                    "notes"
-                ]:
-
-                    value = row.get(
-                        column
-                    )
-
-                    if pd.notna(value):
-
-                        if str(value).strip():
-
-                            texts.append(
-                                str(value)
-                            )
-
-                if texts:
-
-                    st.write(
-                        f"**{row['date'].date()}**"
-                    )
-
-                    st.write(
-                        " — ".join(texts)
-                    )
-
-                    st.markdown("---")
