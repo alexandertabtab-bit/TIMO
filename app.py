@@ -694,43 +694,61 @@ def render_reels_extras():
         return
 
     quiz = [
-        ("Which prophet built the Ark by Allah's command?", "Nuh"),
-        ("Which prophet was swallowed by a great fish?", "Yunus"),
-        ("How many daily prayers are obligatory in Islam?", "5"),
-        ("Which prophet was given the Zabur?", "Dawud"),
-        ("What is the first month of the Hijri calendar?", "Muharram"),
-        ("Which prophet spoke to Allah at Mount Sinai?", "Musa"),
+        ("أي نبي بنى السفينة بأمر الله؟", "نوح"),
+        ("أي نبي التقمه الحوت؟", "يونس"),
+        ("كم عدد الصلوات المفروضة يوميًا في الإسلام؟", "خمس"),
+        ("أي نبي أُنزل عليه الزبور؟", "داود"),
+        ("ما هو الشهر الأول في التقويم الهجري؟", "محرم"),
+        ("أي نبي كلّم الله في جبل الطور؟", "موسى"),
     ]
 
     facts = [
-        "The Qur'an contains 114 surahs.",
-        "The Hijri calendar is based on lunar months.",
-        "Al-Fatiha is the opening surah of the Qur'an.",
-        "Muslims face the Kaaba during the five daily prayers.",
-        "The Qur'an was revealed over approximately 23 years.",
-        "Prophet Musa is one of the most frequently mentioned prophets in the Qur'an.",
+        "يحتوي القرآن الكريم على 114 سورة.",
+        "يعتمد التقويم الهجري على الأشهر القمرية.",
+        "الفاتحة هي السورة الافتتاحية للقرآن الكريم.",
+        "يستقبل المسلمون الكعبة في الصلوات الخمس اليومية.",
+        "نزل القرآن الكريم على مدى نحو 23 عامًا.",
+        "النبي موسى من أكثر الأنبياء ذكرًا في القرآن الكريم.",
     ]
 
     if mode == "🧠 Islamic Quiz":
         idx = st.session_state.get("quiz_idx", 0) % len(quiz)
         question, answer = quiz[idx]
-        st.subheader("Question")
-        st.write(question)
-        guess = st.text_input("Your answer", key=f"quiz_guess_{idx}")
-        if st.button("Check answer", type="primary"):
+        st.subheader("السؤال")
+        st.markdown(f'<div class="arabic-text" style="font-size:22px;" dir="rtl">{question}</div>', unsafe_allow_html=True)
+        guess = st.text_input("إجابتك", key=f"quiz_guess_{idx}")
+        if st.button("تحقق من الإجابة", type="primary"):
             if guess.strip().casefold() == answer.casefold():
-                st.success("Correct ✨")
+                st.success("إجابة صحيحة ✨")
             else:
-                st.info(f"Answer: {answer}")
-        if st.button("Next question"):
+                st.info(f"الإجابة: {answer}")
+        if st.button("السؤال التالي"):
             st.session_state["quiz_idx"] = idx + 1
             st.rerun()
     else:
         idx = st.session_state.get("fact_idx", 0) % len(facts)
-        st.markdown(f'<div class="content-card"><h3 style="color:#214634;text-shadow:none;">✨ Quick Fact</h3><p style="color:#214634;text-shadow:none;font-size:18px;">{facts[idx]}</p></div>', unsafe_allow_html=True)
-        if st.button("Another fact", type="primary"):
+        st.markdown(
+            f'<div class="content-card"><h3 style="color:#214634;text-shadow:none;">✨ حقيقة سريعة</h3>'
+            f'<p class="arabic-text" style="color:#214634;text-shadow:none;font-size:20px;" dir="rtl">{facts[idx]}</p></div>',
+            unsafe_allow_html=True,
+        )
+        if st.button("حقيقة أخرى", type="primary"):
             st.session_state["fact_idx"] = idx + 1
             st.rerun()
+
+
+def render_add_to_home_screen():
+    with st.expander("📱 Add this to your phone's home screen"):
+        st.markdown(
+            "**iPhone (Safari):**\n"
+            "1. Open this app's link in Safari (not Chrome — must be Safari on iOS).\n"
+            "2. Tap the Share icon (square with an arrow) at the bottom of the screen.\n"
+            "3. Scroll down and tap **Add to Home Screen**.\n"
+            "4. Tap **Add** in the top right.\n\n"
+            "It now opens full-screen from the home screen, like a regular app, "
+            "no browser bar.\n\n"
+            "**Android (Chrome):** tap the ⋮ menu → **Add to Home screen**."
+        )
 
 
 # ============================================================
@@ -984,6 +1002,7 @@ if view == "👤 His View":
         render_calendar()
 
     else:
+        render_add_to_home_screen()
         render_reels_extras()
 
 
