@@ -7,6 +7,7 @@ import base64
 import calendar
 import json
 import re
+import hashlib
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen, Request
 from datetime import date
@@ -35,6 +36,7 @@ COLUMNS = [
     "mood_rating",
     "mood_severity",
     "sleep_score",
+    "meal_status",
     "ed_status",
     "purging",
     "factors",
@@ -250,6 +252,64 @@ def inject_design():
     """, unsafe_allow_html=True)
 
 
+
+
+# High-contrast override: prevents dark text from disappearing into the mosque.
+st.markdown("""
+<style>
+.stApp [data-testid="stMarkdownContainer"] p,
+.stApp [data-testid="stMarkdownContainer"] li,
+.stApp .stText,
+.stApp label,
+.stApp h1, .stApp h2, .stApp h3, .stApp h4 {
+    color: #FFF4C7 !important;
+    text-shadow: 0 2px 5px rgba(0,0,0,.85) !important;
+}
+.stApp div[data-testid="stRadio"] {
+    background: #E2F0D6 !important;
+    border: 2px solid #FFF4C7 !important;
+    border-radius: 22px !important;
+    padding: 12px 16px !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.28) !important;
+}
+.stApp div[data-testid="stRadio"] label,
+.stApp div[data-testid="stRadio"] label p,
+.stApp div[data-testid="stRadio"] span {
+    color: #214634 !important;
+    text-shadow: none !important;
+    font-weight: 700 !important;
+}
+.stApp .stSlider {
+    background: #E2F0D6 !important;
+    border: 2px solid #FFF4C7 !important;
+    border-radius: 22px !important;
+    padding: 14px 16px 6px !important;
+    box-shadow: 0 8px 22px rgba(0,0,0,.28) !important;
+}
+.stApp .stSlider label,
+.stApp .stSlider p,
+.stApp .stSlider span {
+    color: #214634 !important;
+    text-shadow: none !important;
+    font-weight: 700 !important;
+}
+.stApp input, .stApp textarea {
+    background: #FFF9E6 !important;
+    color: #214634 !important;
+    -webkit-text-fill-color: #214634 !important;
+    border-radius: 16px !important;
+}
+.stApp .stNumberInput label,
+.stApp .stDateInput label,
+.stApp .stTextInput label,
+.stApp .stTextArea label,
+.stApp .stSelectbox label,
+.stApp .stMultiSelect label {
+    color: #FFF4C7 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 def inject_background():
     if not os.path.exists(BACKGROUND_IMAGE):
         return
@@ -384,7 +444,10 @@ def render_lithium():
 # ============================================================
 
 def load_settings():
-    default = {"youtube_playlist": ""}
+    default = {
+        "youtube_playlist": "",
+        "my_view_passcode_hash": "",
+    }
     if os.path.exists(SETTINGS_FILE):
         try:
             with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
@@ -450,32 +513,78 @@ def get_playlist_videos(playlist_id):
         return []
 
 
-def render_playlist_settings():
-    st.subheader("🎬 Reels playlist")
+def hash_passcode(value):
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
+
+def render_my_view_lock():
+    settings = load_settings()
+    if not settings.get("my_view_passcode_hash"):
+        st.subheader("🔐 Protect My View")
+        st.caption("Set a passcode for this private view.")
+        p1 = st.text_input("Choose a passcode", type="password", key="pass_setup_1")
+        p2 = st.text_input("Confirm passcode", type="password", key="pass_setup_2")
+        if st.button("Save passcode", type="primary", key="save_passcode"):
+            if len(p1) < 4:
+                st.warning("Use at least 4 characters.")
+            elif p1 != p2:
+                st.warning("The passcodes do not match.")
+            else:
+                settings["my_view_passcode_hash"] = hash_passcode(p1)
+                save_settings(settings)
+                st.session_state["my_view_unlocked"] = True
+                st.success("My View is protected.")
+                st.rerun()
+        return False
+
+    if st.session_state.get("my_view_unlocked"):
+        return True
+
+    st.subheader("🔐 My View")
+    entered = st.text_input("Enter passcode", type="password", key="my_view_unlock")
+    if st.button("Unlock", type="primary", key="unlock_my_view"):
+        if hash_passcode(entered) == settings["my_view_passcode_hash"]:
+            st.session_state["my_view_unlocked"] = True
+            st.rerun()
+        else:
+            st.error("Incorrect passcode.")
+    return False
+
+
+def render_notification_panel():
+    st.subheader("🔔 Check-in reminder")
+    st.write("The app can show a reminder while it is open.")
+    if st.button("Test reminder", type="primary"):
+        st.toast("🌙 Life Chart: time for today's check-in.", icon="🔔")
+    st.caption("True phone notifications while the app is closed need web-push/PWA infrastructure; Streamlit alone cannot reliably send them in the background.")
+
+
+def render_playlist_settings():
+    st.subheader("🎬 Reels source")
     settings = load_settings()
 
-    st.write(
-        "Paste your YouTube playlist link once. "
-        "After that, add as many videos or Shorts as you want to the playlist "
-        "on YouTube. The app will load them automatically."
-    )
+    presets = {
+        "The Revert Show — Islamic podcast": "https://www.youtube.com/playlist?list=PLU-jg6lAocAHBMEA9NIWnlbWA0D_tDYYJ",
+        "معتدل — قرآن ومناقشات": "https://www.youtube.com/playlist?list=PLhFlguAHRrsM29LnpYPEuv9UNHw4QfkqH",
+        "Custom playlist": settings.get("youtube_playlist", ""),
+    }
 
+    choice = st.selectbox("Choose a ready-made playlist", list(presets.keys()), key="playlist_preset")
     playlist = st.text_input(
-        "YouTube playlist link",
-        value=settings.get("youtube_playlist", ""),
-        placeholder="https://www.youtube.com/playlist?list=...",
+        "Playlist link",
+        value=presets[choice],
+        key="playlist_link_input",
     )
 
-    if st.button("Save playlist", type="primary"):
+    if st.button("Save this playlist", type="primary"):
         playlist_id = extract_playlist_id(playlist)
         if playlist_id:
             settings["youtube_playlist"] = playlist
             save_settings(settings)
             get_playlist_videos.clear()
-            st.success("Playlist saved. New videos added to that playlist will appear automatically.")
+            st.success("Saved. New videos added to this playlist can appear without editing app.py.")
         else:
-            st.warning("Please paste a valid YouTube playlist link containing ?list=...")
+            st.warning("Please use a valid YouTube playlist link.")
 
 
 def render_reels():
@@ -569,6 +678,59 @@ def render_reels():
     st.markdown('<div class="reels-wrap">', unsafe_allow_html=True)
     components.html(html, height=720, scrolling=False)
     st.markdown('</div>', unsafe_allow_html=True)
+
+
+
+def render_reels_extras():
+    mode = st.radio(
+        "Explore",
+        ["🎬 Feed", "🧠 Islamic Quiz", "✨ Quick Facts"],
+        horizontal=True,
+        key="reels_mode",
+    )
+
+    if mode == "🎬 Feed":
+        render_reels()
+        return
+
+    quiz = [
+        ("Which prophet built the Ark by Allah's command?", "Nuh"),
+        ("Which prophet was swallowed by a great fish?", "Yunus"),
+        ("How many daily prayers are obligatory in Islam?", "5"),
+        ("Which prophet was given the Zabur?", "Dawud"),
+        ("What is the first month of the Hijri calendar?", "Muharram"),
+        ("Which prophet spoke to Allah at Mount Sinai?", "Musa"),
+    ]
+
+    facts = [
+        "The Qur'an contains 114 surahs.",
+        "The Hijri calendar is based on lunar months.",
+        "Al-Fatiha is the opening surah of the Qur'an.",
+        "Muslims face the Kaaba during the five daily prayers.",
+        "The Qur'an was revealed over approximately 23 years.",
+        "Prophet Musa is one of the most frequently mentioned prophets in the Qur'an.",
+    ]
+
+    if mode == "🧠 Islamic Quiz":
+        idx = st.session_state.get("quiz_idx", 0) % len(quiz)
+        question, answer = quiz[idx]
+        st.subheader("Question")
+        st.write(question)
+        guess = st.text_input("Your answer", key=f"quiz_guess_{idx}")
+        if st.button("Check answer", type="primary"):
+            if guess.strip().casefold() == answer.casefold():
+                st.success("Correct ✨")
+            else:
+                st.info(f"Answer: {answer}")
+        if st.button("Next question"):
+            st.session_state["quiz_idx"] = idx + 1
+            st.rerun()
+    else:
+        idx = st.session_state.get("fact_idx", 0) % len(facts)
+        st.markdown(f'<div class="content-card"><h3 style="color:#214634;text-shadow:none;">✨ Quick Fact</h3><p style="color:#214634;text-shadow:none;font-size:18px;">{facts[idx]}</p></div>', unsafe_allow_html=True)
+        if st.button("Another fact", type="primary"):
+            st.session_state["fact_idx"] = idx + 1
+            st.rerun()
 
 
 # ============================================================
@@ -822,7 +984,7 @@ if view == "👤 His View":
         render_calendar()
 
     else:
-        render_reels()
+        render_reels_extras()
 
 
 # ============================================================
@@ -830,9 +992,12 @@ if view == "👤 His View":
 # ============================================================
 
 else:
+    if not render_my_view_lock():
+        st.stop()
+
     tab = st.radio(
         "Navigation",
-        ["📝 Entry", "📈 Mood", "🧩 Factors", "📅 Calendar", "💊 Lithium", "🎬 Reels Setup"],
+        ["📝 Entry", "📈 Mood", "🧩 Factors", "📅 Calendar", "💊 Lithium", "🎬 Reels Setup", "🔔 Reminder"],
         horizontal=True,
         label_visibility="collapsed",
         key="my_nav",
@@ -840,36 +1005,29 @@ else:
 
     if tab == "📝 Entry":
         st.subheader("Detailed entry")
+        entry_date = st.date_input("Date", value=date.today(), key="my_date")
 
-        entry_date = st.date_input(
-            "Date",
-            value=date.today(),
-            key="my_date",
-        )
-
+        st.markdown("### Mood")
         mood = st.slider(
-            "Mood",
-            -4, 4, 0,
-            key="my_mood",
+            "1 = very low · 5 = stable · 10 = very elevated",
+            1, 10, 5, key="my_mood_scale"
+        )
+        mood_rating = (mood - 5) * 4 / 5
+        st.caption(f"{mood}/10")
+
+        st.markdown("### 😴 Sleep")
+        sleep_hours = st.number_input(
+            "How many hours of sleep?",
+            min_value=0.0, max_value=24.0, value=7.0, step=0.5,
+            key="my_sleep_hours",
         )
 
-        labels = {
-            -4: "Severe depression",
-            -3: "Marked depression",
-            -2: "Moderate depression",
-            -1: "Mild depression",
-            0: "Stable",
-            1: "Mild hypomania",
-            2: "Moderate hypomania",
-            3: "Marked hypomania",
-            4: "Severe hypomania",
-        }
-        st.caption(labels[mood])
-
-        sleep_score = st.slider(
-            "Sleep quality",
-            1, 10, 5,
-            key="my_sleep",
+        st.markdown("### 🍽️ Meal")
+        meal_status = st.radio(
+            "Did he eat a meal?",
+            ["Ate", "Skipped"],
+            horizontal=True,
+            key="my_meal_status",
         )
 
         st.subheader("Factors that may have influenced today")
@@ -878,57 +1036,29 @@ else:
             FACTOR_OPTIONS,
             key="my_factors",
         )
-
         other = ""
         if "Other" in selected:
-            other = st.text_input(
-                "Describe the other factor",
-                key="my_other_factor",
-            )
-
+            other = st.text_input("Describe the other factor", key="my_other_factor")
         final_factors = [x for x in selected if x != "Other"]
         if other.strip():
             final_factors.append(other.strip())
 
-        notes = st.text_area(
-            "Additional notes",
-            key="my_notes",
-        )
-
-        st.markdown("### Medication")
-        medications = st.text_input(
-            "Medication taken",
-            key="my_medications",
-        )
-        med_adherence = st.selectbox(
-            "Medication adherence",
-            ["As prescribed", "Missed a dose", "Not applicable"],
-            key="my_adherence",
-        )
+        notes = st.text_area("Additional notes", key="my_notes")
 
         st.markdown("### ED status")
-        ed_status = st.radio(
-            "ED active today?",
-            ["No", "Yes"],
-            horizontal=True,
-            key="my_ed",
-        )
-
+        ed_status = st.radio("ED active today?", ["No", "Yes"], horizontal=True, key="my_ed")
         purging = False
         if ed_status == "Yes":
-            purging = st.checkbox(
-                "Purging occurred today",
-                key="my_purging",
-            )
+            purging = st.checkbox("Purging occurred today", key="my_purging")
 
         if st.button("Save detailed entry", type="primary"):
             save_entry(entry_date, {
-                "mood_rating": mood,
-                "sleep_score": sleep_score,
+                "mood_rating": mood_rating,
+                "mood_severity": mood,
+                "sleep_score": sleep_hours,
+                "meal_status": meal_status,
                 "factors": ", ".join(final_factors),
                 "notes": notes,
-                "medications": medications,
-                "med_adherence": med_adherence,
                 "ed_status": ed_status,
                 "purging": purging,
             })
@@ -936,15 +1066,13 @@ else:
 
     elif tab == "📈 Mood":
         render_mood_chart()
-
     elif tab == "🧩 Factors":
         render_factor_charts()
-
     elif tab == "📅 Calendar":
         render_calendar()
-
     elif tab == "💊 Lithium":
         render_lithium()
-
-    else:
+    elif tab == "🎬 Reels Setup":
         render_playlist_settings()
+    else:
+        render_notification_panel()
