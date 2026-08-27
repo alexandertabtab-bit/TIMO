@@ -1,0 +1,20 @@
+{
+  "short_name": "TIMO",
+  "name": "TIMO",
+  "icons": [
+    {
+      "src": "favicon_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/https://f7mke7fogcqg2manbhgoqe.streamlit.app/",
+  "display": "standalone",
+  "theme_color": "#235d3a",
+  "background_color": "#fdfbf7",
+  "id": "timo",
+  "description": "TIMO — daily check-ins, reminders, mood tracking and personal tools.",
+  "dir": "auto",
+  "lang": "en",
+  "orientation": "portrait"
+}
