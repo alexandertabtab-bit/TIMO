@@ -22,6 +22,10 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed"
 )
+st.markdown(
+    '<link rel="manifest" href="/app/static/manifest.json">',
+    unsafe_allow_html=True,
+)
 
 DATA_FILE = "life_chart_data.csv"
 LITHIUM_FILE = "lithium_tests.csv"
